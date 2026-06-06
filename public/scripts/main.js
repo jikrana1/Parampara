@@ -107,7 +107,7 @@ async function loadVillagePosts() {
                 <h4>${escapeHtml(post.title)}</h4>
                 <p class="post-meta">${post.village} • ${formatDate(post.timestamp)}</p>
                 <p>${escapeHtml(post.content)}</p>
-                <span style="display: inline-block; padding: 0.25rem 0.75rem; background: var(--primary-color); border-radius: 20px; font-size: 0.85rem; margin-top: 1rem;">
+                <span style="display: inline-block; padding: 0.25rem 0.75rem; background: var(--primary-color); border-radius: 20px; font-size: 1rem; margin-top: 1rem; color:white">
                     ${post.type}
                 </span>
             </div>
