@@ -39,7 +39,7 @@
 .trail-card {
     background: var(--card-bg);
     padding: 2rem;
-    border-radius: var(--border-radius);
+    border-radius: 1.5rem;
     box-shadow: var(--shadow);
     transition: var(--transition);
     cursor: pointer;
@@ -51,6 +51,7 @@
 
 .trail-card:hover {
     transform: translateY(-5px);
+    border: 3px solid var(--accent-color);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
 
@@ -66,6 +67,10 @@
     font-size: 1.6rem;
     margin-bottom: 0.5rem;
     font-weight: bold;
+}
+
+.trail-card h3:hover{
+    text-decoration: underline;
 }
 
 .trail-card-location {
