@@ -458,12 +458,18 @@ background: #C67A1A;
 .section-title {
   background-color: #733827;
 }
+.live-updates-container{
+        background-color: #733827;
+        color: white;
+}
 .posts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+    display: grid;
+    text-align: center;
+    color: white;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .post-card {
