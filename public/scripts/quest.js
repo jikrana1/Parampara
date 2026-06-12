@@ -57,8 +57,8 @@ window.addEventListener('parampara:langchange', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
     if (!localStorage.getItem('userId')) localStorage.setItem('userId', userId);
+    showLoadingState();
     loadUserProgress();
-    displayQuests();
 });
 
 async function loadUserProgress() {
@@ -67,12 +67,13 @@ async function loadUserProgress() {
         const progress = await response.json();
         if (progress.badges) userProgress = progress;
         displayProgress();
+        displayQuests();
     } catch (error) {
         console.error('Error loading progress:', error);
         displayProgress();
+        displayQuests();
     }
 }
-
 function displayProgress() {
     document.getElementById('badge-count').textContent    = userProgress.badges?.length  || 0;
     document.getElementById('quest-completed').textContent = userProgress.quests?.length  || 0;
@@ -107,8 +108,34 @@ function displayBadges() {
     `).join('');
 }
 
+function showLoadingState() {
+    const questsList = document.getElementById('quests-list');
+    const badgesGrid = document.getElementById('badges-grid');
+
+    questsList.innerHTML = `
+        <div class="empty-state">
+            <div class="empty-state-icon">⏳</div>
+            <p class="empty-state-text">Loading quests...</p>
+        </div>`;
+
+    badgesGrid.innerHTML = `
+        <div class="empty-state" style="grid-column:1/-1;">
+            <div class="empty-state-icon">⏳</div>
+            <p class="empty-state-text">Loading badges...</p>
+        </div>`;
+}
+
 function displayQuests() {
     const questsList = document.getElementById('quests-list');
+
+    if (!availableQuests || availableQuests.length === 0) {
+        questsList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">🎯</div>
+                <p class="empty-state-text">No quests available yet. Check back soon!</p>
+            </div>`;
+        return;
+    }
 
     questsList.innerHTML = availableQuests.map(quest => {
         const rewardName  = tQuest(quest.reward.nameKey);
