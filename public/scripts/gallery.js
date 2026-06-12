@@ -134,17 +134,51 @@ function filterItems() {
 
 async function handleAddItem(e) {
     e.preventDefault();
+
+    // Clear previous errors
+    document.querySelectorAll('.field-error').forEach(el => el.remove());
+    document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+
     const formData = new FormData(e.target);
+    const title       = formData.get('title').trim();
+    const type        = formData.get('type');
+    const location    = formData.get('location').trim();
+    const description = formData.get('description').trim();
+    const imageUrl    = formData.get('imageUrl').trim();
+    const audioUrl    = formData.get('audioUrl').trim();
+
+    // Validate
+    let hasError = false;
+
+    function showError(fieldName, message) {
+        const input = e.target.querySelector(`[name="${fieldName}"]`);
+        input.classList.add('input-error');
+        const error = document.createElement('span');
+        error.className = 'field-error';
+        error.textContent = message;
+        input.parentNode.appendChild(error);
+        hasError = true;
+    }
+
+    function isValidUrl(str) {
+        try { new URL(str); return true; } catch { return false; }
+    }
+
+    if (!title)       showError('title',       'Title is required.');
+    if (!location)    showError('location',     'Location/Village is required.');
+    if (!description) showError('description',  'Description is required.');
+    if (imageUrl && !isValidUrl(imageUrl)) showError('imageUrl', 'Please enter a valid URL (e.g. https://example.com/image.jpg).');
+    if (audioUrl && !isValidUrl(audioUrl)) showError('audioUrl', 'Please enter a valid URL.');
+
+    if (hasError) return;
+
     const data = {
-        title:       formData.get('title'),
-        type:        formData.get('type'),
-        location:    formData.get('location'),
-        description: formData.get('description'),
-        imageUrl:    formData.get('imageUrl') || '',
-        audioUrl:    formData.get('audioUrl') || '',
-        tags:        formData.get('tags')
-                       ? formData.get('tags').split(',').map(t => t.trim())
-                       : []
+        title, type, location, description,
+        imageUrl: imageUrl || '',
+        audioUrl: audioUrl || '',
+        tags: formData.get('tags')
+               ? formData.get('tags').split(',').map(t => t.trim())
+               : []
     };
 
     try {
