@@ -14,6 +14,8 @@ const postRoutes = require('./routes/post.routes');
 const chatRoutes = require('./routes/chat.routes');
 const checkinRoutes = require('./routes/checkin.routes');
 
+const store = require('./data/store');
+
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -87,6 +89,27 @@ app.use('/api/posts', postRoutes);
 app.use('/api/chat', chatRoutes);
 
 app.use('/api/checkin', checkinRoutes);
+
+app.get('/api/risk-dashboard', (req, res, next) => {
+  try {
+    const items = store.culturalItems || [];
+    const responseData = items.map((item) => ({
+      name: item.title,
+      location: item.location,
+      artisans: item.artisans !== undefined ? item.artisans : 5,
+      records: item.records !== undefined ? item.records : 3,
+      lastUpdated:
+        item.lastUpdated ||
+        (item.timestamp
+          ? item.timestamp.split('T')[0]
+          : new Date().toISOString().split('T')[0]),
+      engagement: item.engagement !== undefined ? item.engagement : 50,
+    }));
+    res.json(responseData);
+  } catch (error) {
+    next(error);
+  }
+});
 
 app.get('/api/map-style', async (req, res) => {
   if (!process.env.MAPTILER_KEY) {
