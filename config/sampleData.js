@@ -119,6 +119,279 @@ function initializeSampleData() {
     quests: 0,
     memberSince: 'March 2026',
   });
+
+  // Seeding Timeline Events
+  store.timelineEvents.push(
+    // Madhubani Art
+    {
+      id: 't-mb-1950',
+      item: 'Madhubani Art',
+      year: 1950,
+      title: 'Natural Pigments & Mud Walls',
+      description: 'Mithila artists painted mud walls using pigments from turmeric, clay, and plants.',
+      presentTense: 'We are painting on mud walls and handmade paper using purely natural dyes from plants and minerals.',
+      pastTense: 'Mithila artists painted mud walls using pigments from turmeric, clay, and plants.',
+      futureTense: 'The ancient tradition of painting mud walls with plant dyes remains local to Mithila.',
+      significance: 'Maintained the zero-waste organic nature of ancestral ritual paintings.',
+      type: 'craft',
+      image: '🎨'
+    },
+    {
+      id: 't-mb-1980',
+      item: 'Madhubani Art',
+      year: 1980,
+      title: 'National Recognition',
+      description: 'The Indian Government recognized Madhubani artists, bringing the art to paper.',
+      presentTense: 'The Government is awarding national recognition to our local artists, helping us paint on handmade paper for wider reach.',
+      pastTense: 'The Indian Government recognized Madhubani artists, bringing the art to paper.',
+      futureTense: 'Artisans will soon transition to canvas and paper, gaining the attention of national leaders.',
+      significance: 'Transitioned the craft from home ritual to commercial economic stability.',
+      type: 'craft',
+      image: '🏆'
+    },
+    {
+      id: 't-mb-2000',
+      item: 'Madhubani Art',
+      year: 2000,
+      title: 'International Exhibitions',
+      description: 'Madhubani art was showcased globally, entering museums in Europe and Japan.',
+      presentTense: 'Our paintings are now exhibited globally in major museums and cultural galleries in Europe, USA, and Japan.',
+      pastTense: 'Madhubani art was showcased globally, entering museums in Europe and Japan.',
+      futureTense: 'Global collectors will discover these unique patterns, leading to overseas exhibitions.',
+      significance: 'Preserved the folk stories in international art archives.',
+      type: 'craft',
+      image: '🏛️'
+    },
+    {
+      id: 't-mb-2025',
+      item: 'Madhubani Art',
+      year: 2025,
+      title: 'Digital Preservation',
+      description: 'Artisans launched digital vector archives and digital preservation registries.',
+      presentTense: 'We are launching digital drawing archives and vector catalogs to preserve our heritage.',
+      pastTense: 'Artisans launched digital vector archives and digital preservation registries.',
+      futureTense: 'Digital technology will enable new forms of vector art and online archives to preserve these patterns.',
+      significance: 'Bridges traditional art forms with modern digital platforms and global licensing.',
+      type: 'craft',
+      image: '💻'
+    },
+
+    // Kantha Embroidery
+    {
+      id: 't-kt-1950',
+      item: 'Kantha Embroidery',
+      year: 1950,
+      title: 'Repurposing Old Saris',
+      description: 'Women embroidered old cotton saris together to make domestic quilts.',
+      presentTense: 'We are hand-stitching old saris together using simple running stitches to keep our families warm.',
+      pastTense: 'Women embroidered old cotton saris together to make domestic quilts.',
+      futureTense: 'The running stitch on old cotton saris will grow from a domestic chore into a recognized design aesthetic.',
+      significance: 'Pioneered sustainability and recycling in rural Indian household items.',
+      type: 'craft',
+      image: '🧵'
+    },
+    {
+      id: 't-kt-1980',
+      item: 'Kantha Embroidery',
+      year: 1980,
+      title: 'Commercial Cooperatives',
+      description: 'Self-help groups and cooperatives revived Kantha on commercial garments.',
+      presentTense: 'We are forming self-help groups and cooperatives to sell beautiful hand-embroidered apparel to urban markets.',
+      pastTense: 'Self-help groups and cooperatives revived Kantha on commercial garments.',
+      futureTense: 'Cooperative groups will revive these patterns to provide employment to village women.',
+      significance: 'Provided primary financial independence to hundreds of Bengal craftswomen.',
+      type: 'craft',
+      image: '🤝'
+    },
+    {
+      id: 't-kt-2000',
+      item: 'Kantha Embroidery',
+      year: 2000,
+      title: 'High-Fashion Runways',
+      description: 'Designers collaborated with artisans, presenting Kantha work in luxury couture.',
+      presentTense: 'Fashion designers are collaborating with us to bring our traditional running stitches to upscale fashion runways.',
+      pastTense: 'Designers collaborated with artisans, presenting Kantha work in luxury couture.',
+      futureTense: 'Kantha embroidery will soon make its debut on high-fashion runways and designer labels.',
+      significance: 'Established folk embroidery as a high-value global luxury asset.',
+      type: 'craft',
+      image: '👗'
+    },
+    {
+      id: 't-kt-2025',
+      item: 'Kantha Embroidery',
+      year: 2025,
+      title: 'Direct E-Commerce',
+      description: 'Artisans listed quilts on direct web portals, exporting internationally.',
+      presentTense: 'We are listing our hand-stitched quilts on global e-commerce portals, selling directly to overseas buyers.',
+      pastTense: 'Artisans listed quilts on direct web portals, exporting internationally.',
+      futureTense: 'Online global portals will connect rural Bengal stitchers directly with international buyers.',
+      significance: 'Cut middleman fees, returning 90% of profits to village embroiders.',
+      type: 'craft',
+      image: '🌐'
+    },
+
+    // Dokra Metal Craft
+    {
+      id: 't-dk-1950',
+      item: 'Dokra Metal Craft',
+      year: 1950,
+      title: 'Lost-Wax Nomad Casting',
+      description: 'Nomadic metalworkers cast brass icons using clay cores and beeswax molds.',
+      presentTense: 'We are traveling from village to village, melting scrap metal and casting tiny brass icons using beeswax molds.',
+      pastTense: 'Nomadic metalworkers cast brass icons using clay cores and beeswax molds.',
+      futureTense: 'The nomadic lost-wax casting technique will settle into specialized artisan hubs.',
+      significance: 'Preserved the 4,000-year-old Harappan lost-wax casting methodology.',
+      type: 'craft',
+      image: '🕯️'
+    },
+    {
+      id: 't-dk-1980',
+      item: 'Dokra Metal Craft',
+      year: 1980,
+      title: 'Settled Village Hubs',
+      description: 'Nomadic groups settled into permanent craft villages in Chhattisgarh.',
+      presentTense: 'We are establishing permanent wood-fired furnaces in our villages to increase our casting capacity.',
+      pastTense: 'Nomadic groups settled into permanent craft villages in Chhattisgarh.',
+      futureTense: 'Artisans will establish permanent kilns and workshops in fixed hubs.',
+      significance: 'Enabled community sharing of furnaces and metal raw materials.',
+      type: 'craft',
+      image: '🔥'
+    },
+    {
+      id: 't-dk-2000',
+      item: 'Dokra Metal Craft',
+      year: 2000,
+      title: 'Home Decor Pivot',
+      description: 'Craftsmen expanded from tribal deities to contemporary utility designs.',
+      presentTense: 'We are adapting our traditional figurines to create beautiful utility items like handles, lamps, and modern decor.',
+      pastTense: 'Craftsmen expanded from tribal deities to contemporary utility designs.',
+      futureTense: 'The ancient figurines will adapt into high-end modern home decor utilities.',
+      significance: 'Rescued the craft from declining religious figurine markets.',
+      type: 'craft',
+      image: '🏺'
+    },
+    {
+      id: 't-dk-2025',
+      item: 'Dokra Metal Craft',
+      year: 2025,
+      title: 'Clean Gas Smelting',
+      description: 'Workshops adopted solar induction and gas furnaces to replace charcoal.',
+      presentTense: 'We are smelting brass in eco-friendly gas furnaces, reducing smoke and scrap wastage.',
+      pastTense: 'Workshops adopted solar induction and gas furnaces to replace charcoal.',
+      futureTense: 'Eco-friendly gas kilns will replace charcoal furnaces to protect our health and environment.',
+      significance: 'Drastically reduced toxic smoke emissions in artisan households.',
+      type: 'craft',
+      image: '🔋'
+    },
+
+    // Kathputli Puppetry
+    {
+      id: 't-kp-1950',
+      item: 'Kathputli Puppetry',
+      year: 1950,
+      title: 'Royal Court Patronage',
+      description: 'Bhatt puppeteers performed epics in royal courtyards of Rajasthan.',
+      presentTense: 'We are carving wooden puppets and performing epics of Rajasthani kings in royal court squares.',
+      pastTense: 'Bhatt puppeteers performed epics in royal courtyards of Rajasthan.',
+      futureTense: 'Court puppet plays will pivot toward public street shows and school education.',
+      significance: 'Passed down legendary histories of heroism through dynamic oral theater.',
+      type: 'tradition',
+      image: '🎭'
+    },
+    {
+      id: 't-kp-1980',
+      item: 'Kathputli Puppetry',
+      year: 1980,
+      title: 'Social Awareness Theatre',
+      description: 'Puppeteers performed street plays about literacy and public health.',
+      presentTense: 'We are touring villages to perform plays about literacy and water conservation using our puppets.',
+      pastTense: 'Puppeteers performed street plays about literacy and public health.',
+      futureTense: 'Puppet plays will be widely used to convey social reform messages across rural communities.',
+      significance: 'Transformed traditional folklore into an educational medium for social reform.',
+      type: 'tradition',
+      image: '📢'
+    },
+    {
+      id: 't-kp-2000',
+      item: 'Kathputli Puppetry',
+      year: 2000,
+      title: 'Luxury Hotel Showcases',
+      description: 'Puppet troupes secured bookings at luxury resorts for global tourists.',
+      presentTense: 'We are performing night shows at grand palaces and five-star resorts for international tourists.',
+      pastTense: 'Puppet troupes secured bookings at luxury resorts for global tourists.',
+      futureTense: 'Puppeteers will find a new stable income by performing at tourist resorts.',
+      significance: 'Preserved rural performance arts via tourism-based income channels.',
+      type: 'festival',
+      image: '🏨'
+    },
+    {
+      id: 't-kp-2025',
+      item: 'Kathputli Puppetry',
+      year: 2025,
+      title: 'Interactive YouTube Shows',
+      description: 'Artists created animated puppet channels and virtual theater apps.',
+      presentTense: 'We are launching YouTube series and interactive online shows so children globally can play with digital puppets.',
+      pastTense: 'Artists created animated puppet channels and virtual theater apps.',
+      futureTense: 'Animated puppetry and YouTube channels will bring Rajasthani stories to mobile screens worldwide.',
+      significance: 'Maintains relevance of ancient puppet stories among digital-native generations.',
+      type: 'tradition',
+      image: '📱'
+    },
+
+    // Sikki Grass Craft
+    {
+      id: 't-sg-1950',
+      item: 'Sikki Grass Craft',
+      year: 1950,
+      title: 'Dowry Weaving',
+      description: 'Mithila women wove colored wild grass into storage containers for weddings.',
+      presentTense: 'We are coloring wild grass and weaving containers to store grains and gifts for weddings.',
+      pastTense: 'Mithila women wove colored wild grass into storage containers for weddings.',
+      futureTense: 'Sikki grass weaving will move from a bridal gift tradition into an eco-friendly consumer product.',
+      significance: 'Symbolized maternal blessings and domestic self-reliance.',
+      type: 'craft',
+      image: '🌾'
+    },
+    {
+      id: 't-sg-1980',
+      item: 'Sikki Grass Craft',
+      year: 1980,
+      title: 'District Fair Entry',
+      description: 'Weavers dyed grass using synthetic colors, crafting toys for local fairs.',
+      presentTense: 'We are dyeing Sikki grass with bright pinks and greens to weave toys for district exhibitions.',
+      pastTense: 'Weavers dyed grass using synthetic colors, crafting toys for local fairs.',
+      futureTense: 'Artisans will introduce vibrant chemical colors to weave toys and animal shapes.',
+      significance: 'Expanded grass weaving from home storage to commercial toy making.',
+      type: 'craft',
+      image: '🎡'
+    },
+    {
+      id: 't-sg-2000',
+      item: 'Sikki Grass Craft',
+      year: 2000,
+      title: 'Organic Brand Marketing',
+      description: 'Sikki containers were marketed as organic biodegradable home utilities.',
+      presentTense: 'We are selling our golden grass baskets in organic craft bazaars as biodegradable home accessories.',
+      pastTense: 'Sikki containers were marketed as organic biodegradable home utilities.',
+      futureTense: 'Urban buyers will embrace Sikki craft as a sustainable, biodegradable packaging alternative.',
+      significance: 'Tapped into the urban middle-class transition to sustainable products.',
+      type: 'craft',
+      image: '🛍️'
+    },
+    {
+      id: 't-sg-2025',
+      item: 'Sikki Grass Craft',
+      year: 2025,
+      title: 'Mobile App Cooperatives',
+      description: 'Weaver collectives sold items directly to international eco-boutiques via app.',
+      presentTense: 'We are using our smartphone app to sell organic Sikki baskets directly to sustainable boutiques abroad.',
+      pastTense: 'Weaver collectives sold items directly to international eco-boutiques via app.',
+      futureTense: 'Artisans will coordinate on smartphone apps to take global export orders directly.',
+      significance: 'Ensures direct trade and fair wages to marginalized female artisans in Bihar.',
+      type: 'craft',
+      image: '📲'
+    }
+  );
 }
 
 module.exports = initializeSampleData;

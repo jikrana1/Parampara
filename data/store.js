@@ -4,6 +4,7 @@ const store = {
   userProgress: {},
   villagePosts: [],
   contributors: [],
+  timelineEvents: [],
 };
 
 module.exports = store;

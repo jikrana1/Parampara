@@ -133,6 +133,26 @@ app.get('/api/reputation', (req, res, next) => {
   }
 });
 
+app.get('/api/timeline', (req, res, next) => {
+  try {
+    let events = store.timelineEvents || [];
+
+    if (req.query.item) {
+      const itemFilter = req.query.item.toLowerCase();
+      events = events.filter((e) => e.item.toLowerCase() === itemFilter);
+    }
+
+    if (req.query.type) {
+      const typeFilter = req.query.type.toLowerCase();
+      events = events.filter((e) => e.type.toLowerCase() === typeFilter);
+    }
+
+    res.json(events);
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.get('/api/risk-dashboard', (req, res, next) => {
   try {
     const items = store.culturalItems || [];
