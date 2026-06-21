@@ -1899,14 +1899,14 @@ body > * {
 
 
 .hero-title,
+.hero-subtitle,
 .section-title,
 .feature-card h3,
 .post-card h4{
-  color: var(--theme-text) !important;
+  color: var(--text-dark) ;
   text-shadow: 0 2px 6px rgba(0,0,0,0.35);
 }
 
-.hero-subtitle,
 .feature-card p,
 .post-card p{
   color: var(--theme-text-secondary) !important;
@@ -1934,17 +1934,8 @@ body > * {
   );
 }
 
-
-.feature-card h3,
-.post-card h4,
-.hero-title,
-.section-title{
-  color: var(--theme-text) !important;
-}
-
 .feature-card p,
-.post-card p,
-.hero-subtitle{
+.post-card p{
   color: var(--theme-text-secondary) !important;
 }
 
