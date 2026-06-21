@@ -6,6 +6,7 @@ const store = {
   contributors: [],
   timelineEvents: [],
   storySourceData: [],
+  artisans: [],
 };
 
 module.exports = store;

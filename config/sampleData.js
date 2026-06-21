@@ -87,6 +87,90 @@ function initializeSampleData() {
     theme: 'Embroidery Traditions',
   });
 
+  // Artisan sample data
+  store.artisans.push({
+    id: 'a1',
+    name: 'Ramesh Kumar',
+    craft: 'Dokra Metal Art',
+    experience: 32,
+    village: 'Bikna',
+    region: 'Chhattisgarh',
+    biography: 'Master metalworker specializing in traditional Dokra casting techniques.',
+    portfolio: [
+      { image: 'images/artisans/ramesh1.jpg', description: 'Brass deity figure' },
+      { image: 'images/artisans/ramesh2.jpg', description: 'Modern lamp design' }
+    ],
+    workshopAvailability: true,
+    contactInfo: { email: 'ramesh@example.com', phone: '1234567890', showContact: true },
+    recognitionLevel: 'Heritage Keeper',
+    relatedContent: ['Dokra Metal Craft', 'Heritage Trail', 'Cultural Story', 'Historical Timeline']
+  });
+  store.artisans.push({
+    id: 'a2',
+    name: 'Meera Devi',
+    craft: 'Madhubani Paintings',
+    experience: 18,
+    village: 'Madhubani',
+    region: 'Bihar',
+    biography: 'Renowned painter bringing vibrant colors to traditional motifs.',
+    portfolio: [
+      { image: 'images/artisans/meera1.jpg', description: 'Village festival scene' },
+      { image: 'images/artisans/meera2.jpg', description: 'Floral border design' }
+    ],
+    workshopAvailability: false,
+    contactInfo: { email: 'meera@example.com', phone: '', showContact: false },
+    recognitionLevel: 'Master Artisan',
+    relatedContent: ['Madhubani Paintings', 'Cultural Story']
+  });
+  store.artisans.push({
+    id: 'a3',
+    name: 'Sanjay Singh',
+    craft: 'Kantha Embroidery',
+    experience: 8,
+    village: 'Kantha Village',
+    region: 'West Bengal',
+    biography: 'Emerging artisan focusing on sustainable textile reuse.',
+    portfolio: [
+      { image: 'images/artisans/sanjay1.jpg', description: 'Quilt with traditional patterns' }
+    ],
+    workshopAvailability: true,
+    contactInfo: { email: 'sanjay@example.com', phone: '9876543210', showContact: true },
+    recognitionLevel: 'Skilled Artisan',
+    relatedContent: ['Kantha Embroidery', 'Heritage Trail']
+  });
+  store.artisans.push({
+    id: 'a4',
+    name: 'Lakshmi Patel',
+    craft: 'Sikki Grass Craft',
+    experience: 4,
+    village: 'Mithila',
+    region: 'Bihar',
+    biography: 'Young craftswoman creating eco‑friendly baskets.',
+    portfolio: [
+      { image: 'images/artisans/lakshmi1.jpg', description: 'Golden grass basket' }
+    ],
+    workshopAvailability: false,
+    contactInfo: { email: 'lakshmi@example.com', phone: '', showContact: false },
+    recognitionLevel: 'Heritage Apprentice',
+    relatedContent: ['Sikki Grass Craft']
+  });
+  store.artisans.push({
+    id: 'a5',
+    name: 'Rohit Kumar',
+    craft: 'Kathputli Puppetry',
+    experience: 20,
+    village: 'Jodhpur',
+    region: 'Rajasthan',
+    biography: 'Veteran puppeteer preserving Rajasthani folklore.',
+    portfolio: [
+      { image: 'images/artisans/rohit1.jpg', description: 'Puppet show performance' }
+    ],
+    workshopAvailability: true,
+    contactInfo: { email: 'rohit@example.com', phone: '5551234567', showContact: true },
+    recognitionLevel: 'Master Artisan',
+    relatedContent: ['Kathputli Puppetry', 'Cultural Story']
+  });
+
   store.contributors.push({
     id: 1,
     name: 'Rahul Sharma',

@@ -13,6 +13,7 @@ const progressRoutes = require('./routes/progress.routes');
 const postRoutes = require('./routes/post.routes');
 const chatRoutes = require('./routes/chat.routes');
 const checkinRoutes = require('./routes/checkin.routes');
+const artisanRoutes = require('./routes/artisan.routes');
 const storyRoutes = require('./routes/story.routes');
 
 const store = require('./data/store');
@@ -92,6 +93,7 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/checkin', checkinRoutes);
 
 app.use('/api/story-generator', storyRoutes);
+app.use('/api/artisans', artisanRoutes);
 
 app.get('/api/reputation', (req, res, next) => {
   try {
