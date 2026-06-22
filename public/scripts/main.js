@@ -118,26 +118,26 @@ function formatDate(dateString) {
     day: "numeric",
   });
 }
-
 const backToTopBtn = document.getElementById("backToTopBtn");
+if (backToTopBtn) {
 
-// Show button after scrolling
-window.addEventListener("scroll", () => {
-  if (window.scrollY > 300) {
-    backToTopBtn.classList.add("show");
-  } else {
-    backToTopBtn.classList.remove("show");
-  }
-});
-
-// Smooth scroll to top
-backToTopBtn.addEventListener("click", () => {
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
+  // Show button after scrolling
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 300) {
+      backToTopBtn.classList.add("show");
+    } else {
+      backToTopBtn.classList.remove("show");
+    }
   });
-});
 
+  // Smooth scroll to top
+  backToTopBtn.addEventListener("click", () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  });
+}
 window.addEventListener("parampara:langchange", () => {
   loadVillagePosts();
 });
