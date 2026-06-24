@@ -178,12 +178,12 @@ function translatePage() {
   const t = getTranslation();
 
   const title = document.querySelector('.map-header h2');
-const subtitle = document.querySelector('.map-header p');
-const villageName = document.getElementById('village-name');
+  const subtitle = document.querySelector('.map-header p');
+  const villageName = document.getElementById('village-name');
 
-if (title) title.textContent = t.mapTitle;
-if (subtitle) subtitle.textContent = t.mapDescription;
-if (villageName) villageName.textContent = t.selectVillage;
+  if (title) title.textContent = t.mapTitle;
+  if (subtitle) subtitle.textContent = t.mapDescription;
+  if (villageName) villageName.textContent = t.selectVillage;
   document.getElementById('info-content').innerHTML =
     `<p>${t.clickVillage}</p>`;
 
@@ -302,44 +302,86 @@ function setMapLanguage(lang) {
   });
 }
 
+// function addVillageMarker(village) {
+//   const el = document.createElement('div');
+
+//   el.className = 'marker';
+
+//   // IMPORTANT: make it clickable
+//   el.style.width = '20px';
+//   el.style.height = '20px';
+//   el.style.borderRadius = '50%';
+//   el.style.background = '#f4a261';
+//   el.style.border = '2px solid white';
+//   el.style.cursor = 'pointer';
+//   el.style.pointerEvents = 'auto';
+
+//   const marker = new maplibregl.Marker(el)
+//     .setLngLat([village.coordinates[1], village.coordinates[0]])
+//     .addTo(map);
+
+//   // safer: attach via marker element
+//   marker.getElement().addEventListener('click', (e) => {
+//     e.stopPropagation(); // important
+//     showVillageInfo(village);
+//     // playAmbientSound(village.ambientSound);
+//   });
+
+//   markers.push(marker);
+// }
+
+// function addVillageMarkers() {
+//   if (!map) {
+//     return;
+//   }
+
+//   // Remove existing markers
+//   markers.forEach((m) => m.remove());
+//   markers = [];
+
+//   sampleVillages.forEach((village) => addVillageMarker(village));
+// }
+
 function addVillageMarker(village) {
-  const el = document.createElement('div');
+  const popup = new maplibregl.Popup({
+    closeButton: true,
+    closeOnClick: true,
+    offset: 25,
+  }).setHTML(`
+      <h3>${village.name[currentLanguage]}</h3>
+      <p>${village.description[currentLanguage]}</p>
+  `);
 
-  el.className = 'marker';
-
-  // IMPORTANT: make it clickable
-  el.style.width = '20px';
-  el.style.height = '20px';
-  el.style.borderRadius = '50%';
-  el.style.background = '#f4a261';
-  el.style.border = '2px solid white';
-  el.style.cursor = 'pointer';
-  el.style.pointerEvents = 'auto';
-
-  const marker = new maplibregl.Marker(el)
+  const marker = new maplibregl.Marker({
+    draggable: false,
+  })
     .setLngLat([village.coordinates[1], village.coordinates[0]])
+    .setPopup(popup)
     .addTo(map);
 
-  // safer: attach via marker element
+  marker.getElement().style.cursor = 'pointer';
+
+  // Force popup open on marker click
   marker.getElement().addEventListener('click', (e) => {
-    e.stopPropagation(); // important
-    showVillageInfo(village);
-    // playAmbientSound(village.ambientSound);
+    e.stopPropagation();
+
+    popup
+      .setLngLat([village.coordinates[1], village.coordinates[0]])
+      .addTo(map);
   });
 
   markers.push(marker);
 }
 
 function addVillageMarkers() {
-  if (!map) {
-    return;
-  }
+  if (!map) return;
 
-  // Remove existing markers
-  markers.forEach((m) => m.remove());
+  markers.forEach((marker) => marker.remove());
   markers = [];
 
-  sampleVillages.forEach((village) => addVillageMarker(village));
+  sampleVillages.forEach((village) => {
+    addVillageMarker(village);
+  });
 }
 
 function showVillageInfo(village) {
@@ -493,7 +535,9 @@ async function loadCulturalItems() {
         const el = document.createElement('div');
         el.className = 'cultural-marker';
 
-        new maplibregl.Marker(el)
+        new maplibregl.Marker({
+          element: el,
+        })
           .setLngLat([item.coordinates[1], item.coordinates[0]])
           .addTo(map);
 
@@ -549,24 +593,29 @@ window.addEventListener('parampara:langchange', (e) => {
   translatePage();
 });
 
-const ambientMusic = new Audio("assets/sounds/ambientSound.mp3");
+const ambientMusic = new Audio('assets/sounds/ambientSound.mp3');
 
 ambientMusic.loop = true;
 ambientMusic.volume = 0.3;
 
-let toggle_btn = document.getElementById('toggle-sound');
 function soundToggler() {
   toggleSound = !toggleSound;
-  if(toggleSound){
-    ambientMusic.pause()
-    toggle_btn.textContent = "Ambient Sound : ON"
-  }else{
-    ambientMusic.play()
-    toggle_btn.textContent = "Ambient Sound : OFF"
+  if (toggleSound) {
+    ambientMusic.pause();
+    toggle_btn.textContent = 'Ambient Sound : ON';
+  } else {
+    ambientMusic.play();
+    toggle_btn.textContent = 'Ambient Sound : OFF';
   }
 }
 
-toggle_btn.addEventListener("click", () => {
-  toggle_btn.textContent = ""
-  soundToggler()
+document.addEventListener('DOMContentLoaded', () => {
+  const toggle_btn = document.getElementById('toggle-sound');
+
+  if (toggle_btn) {
+    toggle_btn.addEventListener('click', () => {
+      toggle_btn.textContent = '';
+      soundToggler();
+    });
+  }
 });
