@@ -2,16 +2,42 @@
 
 let allItems = [];
 
+// SVG hearts (inline, no font dependency)
+const HEART_FILLED = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#e53e3e" stroke="#e53e3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>';
+const HEART_EMPTY  = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>';
+
 document.addEventListener('DOMContentLoaded', () => {
   loadGalleryItems();
   setupEventListeners();
+  setupFavDelegation();  // ← single listener handles ALL heart clicks
 });
 
-// ── Re-render cards whenever language changes
-// language-switcher.js fires this event on every language switch
-window.addEventListener('parampara:langchange', () => {
-  displayItems(getCurrentFilteredItems());
-});
+// ── Event delegation: one listener on the grid catches every heart-button click
+function setupFavDelegation() {
+  const grid = document.getElementById('gallery-grid');
+  grid.addEventListener('click', function(e) {
+    // Walk up from the clicked element to find a .favorite-btn
+    const btn = e.target.closest('.favorite-btn');
+    if (!btn) return;          // not a heart button click
+    e.stopPropagation();       // don't open the item card
+
+    const itemId = btn.dataset.itemId;
+    if (!itemId) return;
+
+    const fm = window.FavoritesManager;
+    if (!fm) { console.warn('FavoritesManager not loaded'); return; }
+
+    fm.toggleFavorite(itemId);
+    const isFav = fm.isFavorite(itemId);
+
+    // Update button visually in-place (no re-render needed)
+    btn.innerHTML = isFav ? HEART_FILLED : HEART_EMPTY;
+    btn.classList.toggle('favorited', isFav);
+    btn.title = isFav ? 'Remove from favorites' : 'Add to favorites';
+
+    console.log('[Parampara] Favorite toggled:', itemId, '→', isFav ? 'ADDED' : 'REMOVED');
+  });
+}
 
 function setupEventListeners() {
   document.getElementById('add-item-btn').addEventListener('click', () => {
@@ -41,13 +67,12 @@ async function loadGalleryItems() {
     displayItems(allItems);
   } catch (error) {
     console.error('Error loading items:', error);
-    // Show sample items for demo when API is unavailable
     allItems = getSampleItems();
     displayItems(allItems);
   }
 }
 
-// ── Translation helper (safe — works even before switcher loads)
+// ── Translation helper
 function tGallery(key) {
   if (typeof PARAMPARA_TRANSLATIONS === 'undefined') return key;
   const lang =
@@ -58,7 +83,6 @@ function tGallery(key) {
   return (dict && dict[key]) || PARAMPARA_TRANSLATIONS['en'][key] || key;
 }
 
-// ── Translate the type badge value
 function translateType(type) {
   const keyMap = {
     visual: 'modal_type_visual',
@@ -68,7 +92,6 @@ function translateType(type) {
   return tGallery(keyMap[type] || type);
 }
 
-// ── Translate "No items" empty state
 function getEmptyStateHtml() {
   return `
         <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-muted);">
@@ -77,6 +100,11 @@ function getEmptyStateHtml() {
         </div>
     `;
 }
+
+// Re-render on language change
+window.addEventListener('parampara:langchange', () => {
+  displayItems(getCurrentFilteredItems());
+});
 
 function displayItems(items) {
   const galleryGrid = document.getElementById('gallery-grid');
@@ -87,20 +115,31 @@ function displayItems(items) {
   }
 
   galleryGrid.innerHTML = items
-    .map(
-      (item) => `
-        <div class="gallery-item" onclick="viewItem('${item.id}')">
-            <div class="gallery-item-image">
+    .map((item) => {
+      const isFav = !!(window.FavoritesManager && window.FavoritesManager.isFavorite(item.id));
+      const heartSvg = isFav ? HEART_FILLED : HEART_EMPTY;
+
+      return `
+        <div class="gallery-item" data-item-id="${escapeHtml(item.id)}">
+            <div class="gallery-item-image" style="position:relative;">
                 ${
                   item.imageUrl
                     ? `<img src="${item.imageUrl}" alt="${escapeHtml(item.title)}" style="width:100%;height:100%;object-fit:cover;">`
                     : `<span>${getTypeIcon(item.type)}</span>`
                 }
+                <button
+                  class="favorite-btn${isFav ? ' favorited' : ''}"
+                  data-item-id="${escapeHtml(item.id)}"
+                  aria-label="${isFav ? 'Remove from favorites' : 'Add to favorites'}"
+                  title="${isFav ? 'Remove from favorites' : 'Add to favorites'}"
+                >
+                    ${heartSvg}
+                </button>
             </div>
-            <div class="gallery-item-content">
+            <div class="gallery-item-content" onclick="viewItem('${escapeHtml(item.id)}'); event.stopPropagation();" style="cursor:pointer;">
                 <span class="gallery-item-type">${translateType(item.type)}</span>
                 <div class="gallery-item-location">
-                    <span class = "gallery-item-location-marker">📍</span> <strong>${escapeHtml(item.location)}</strong>
+                    <span class="gallery-item-location-marker">📍</span> <strong>${escapeHtml(item.location)}</strong>
                 </div>
                 <h3>${escapeHtml(item.title)}</h3>
                 <p>${escapeHtml(item.description.substring(0, 100))}${item.description.length > 100 ? '...' : ''}</p>
@@ -115,8 +154,8 @@ function displayItems(items) {
                 }
             </div>
         </div>
-    `
-    )
+    `;
+    })
     .join('');
 }
 
@@ -125,7 +164,6 @@ function getTypeIcon(type) {
   return icons[type] || '📄';
 }
 
-// ── Returns currently filtered items (used on re-render after lang switch) ────
 function getCurrentFilteredItems() {
   const searchTerm = document
     .getElementById('search-input')
@@ -155,7 +193,6 @@ function filterItems() {
 async function handleAddItem(e) {
   e.preventDefault();
 
-  // Clear previous errors
   document.querySelectorAll('.field-error').forEach((el) => el.remove());
   document
     .querySelectorAll('.input-error')
@@ -169,7 +206,6 @@ async function handleAddItem(e) {
   const imageUrl = formData.get('imageUrl').trim();
   const audioUrl = formData.get('audioUrl').trim();
 
-  // Validate
   let hasError = false;
 
   function showError(fieldName, message) {
@@ -183,39 +219,25 @@ async function handleAddItem(e) {
   }
 
   function isValidUrl(str) {
-    try {
-      new URL(str);
-      return true;
-    } catch {
-      return false;
-    }
+    try { new URL(str); return true; } catch { return false; }
   }
 
   if (!title) showError('title', 'Title is required.');
   if (!location) showError('location', 'Location/Village is required.');
   if (!description) showError('description', 'Description is required.');
   if (imageUrl && !isValidUrl(imageUrl))
-    showError(
-      'imageUrl',
-      'Please enter a valid URL (e.g. https://example.com/image.jpg).'
-    );
+    showError('imageUrl', 'Please enter a valid URL (e.g. https://example.com/image.jpg).');
   if (audioUrl && !isValidUrl(audioUrl))
     showError('audioUrl', 'Please enter a valid URL.');
 
   if (hasError) return;
 
   const data = {
-    title,
-    type,
-    location,
-    description,
+    title, type, location, description,
     imageUrl: imageUrl || '',
     audioUrl: audioUrl || '',
     tags: formData.get('tags')
-      ? formData
-          .get('tags')
-          .split(',')
-          .map((t) => t.trim())
+      ? formData.get('tags').split(',').map((t) => t.trim())
       : [],
   };
 
@@ -245,9 +267,7 @@ async function handleAddItem(e) {
 function viewItem(id) {
   const item = allItems.find((i) => i.id === id);
   if (item) {
-    alert(
-      `${tGallery('gallery_viewing')}: ${item.title}\n\n${item.description}`
-    );
+    alert(`${tGallery('gallery_viewing')}: ${item.title}\n\n${item.description}`);
   }
 }
 
@@ -258,15 +278,13 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// ── Sample items shown when API is not available ──────────────────────────────
 function getSampleItems() {
   return [
     {
       id: '1',
       type: 'visual',
       title: 'Kantha Embroidery Patterns',
-      description:
-        'Traditional Kantha embroidery from rural Bengal, featuring intricate running stitch patterns depicting village life and nature.',
+      description: 'Traditional Kantha embroidery from rural Bengal, featuring intricate running stitch patterns depicting village life and nature.',
       location: 'Kantha Village, Bengal',
       imageUrl: '',
       tags: ['embroidery', 'textile'],
@@ -275,8 +293,7 @@ function getSampleItems() {
       id: '2',
       type: 'audio',
       title: 'Folk Songs of Rajasthan',
-      description:
-        'A collection of traditional folk songs passed down through generations in rural Rajasthan.',
+      description: 'A collection of traditional folk songs passed down through generations in rural Rajasthan.',
       location: 'Jaisalmer, Rajasthan',
       imageUrl: '',
       tags: ['music', 'folk', 'oral-tradition'],
@@ -285,8 +302,7 @@ function getSampleItems() {
       id: '3',
       type: 'story',
       title: 'The Blue Door Legend',
-      description:
-        'An ancient story explaining why villagers in certain regions paint their doors blue to ward off evil spirits.',
+      description: 'An ancient story explaining why villagers in certain regions paint their doors blue to ward off evil spirits.',
       location: 'Jodhpur, Rajasthan',
       imageUrl: '',
       tags: ['legend', 'tradition', 'architecture'],
