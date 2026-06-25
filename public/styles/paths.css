@@ -33,6 +33,47 @@
   font-weight: 600;
 }
 
+.paths-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-end;
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  border: 2px solid var(--accent-color);
+  margin-bottom: 2rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-group label {
+  font-weight: bold;
+  color: var(--earth-brown);
+}
+
+.filter-group input,
+.filter-group select {
+  padding: 0.8rem;
+  border: 1px solid var(--accent-color);
+  border-radius: var(--border-radius);
+  background: rgba(255, 255, 255, 0.8);
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.paths-filter-bar .btn {
+  padding: 0.8rem 1.5rem;
+  height: fit-content;
+}
+
 .paths-list {
   max-height: 600px;
   overflow-y: scroll;

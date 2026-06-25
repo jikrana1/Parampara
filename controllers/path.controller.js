@@ -1,7 +1,26 @@
 const store = require('../data/store');
 
 const getPaths = (req, res) => {
-  res.json(store.heritagePaths);
+  const { theme, sortBy, order } = req.query;
+  let paths = [...store.heritagePaths];
+
+  // Apply Theme Filter
+  if (theme && theme.trim() !== '') {
+    paths = paths.filter(
+      (p) => p.theme && p.theme.toLowerCase().includes(theme.trim().toLowerCase())
+    );
+  }
+
+  // Apply Sorting
+  if (sortBy === 'itemCount') {
+    paths.sort((a, b) => {
+      const aCount = Array.isArray(a.items) ? a.items.length : 0;
+      const bCount = Array.isArray(b.items) ? b.items.length : 0;
+      return order === 'desc' ? bCount - aCount : aCount - bCount;
+    });
+  }
+
+  res.json(paths);
 };
 
 const createPath = (req, res) => {

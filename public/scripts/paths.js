@@ -82,6 +82,24 @@ function setupEventListeners() {
       displayPathStep();
     }
   });
+
+  const applyFiltersBtn = document.getElementById('apply-filters-btn');
+  if (applyFiltersBtn) {
+    applyFiltersBtn.addEventListener('click', () => {
+      loadPaths();
+      document.getElementById('clear-filters-btn').style.display = 'inline-block';
+    });
+  }
+
+  const clearFiltersBtn = document.getElementById('clear-filters-btn');
+  if (clearFiltersBtn) {
+    clearFiltersBtn.addEventListener('click', () => {
+      document.getElementById('theme-filter').value = '';
+      document.getElementById('sort-filter').value = '';
+      loadPaths();
+      clearFiltersBtn.style.display = 'none';
+    });
+  }
 }
 
 // ── Sample paths — keys only, NO hardcoded English
@@ -173,7 +191,17 @@ function pathDesc(path) {
 
 async function loadPaths() {
   try {
-    const response = await fetch('/api/paths');
+    const themeFilter = document.getElementById('theme-filter')?.value.trim() || '';
+    const sortFilter = document.getElementById('sort-filter')?.value || '';
+    
+    let url = '/api/paths?';
+    if (themeFilter) url += `theme=${encodeURIComponent(themeFilter)}&`;
+    if (sortFilter) {
+      const [sortBy, order] = sortFilter.split('_');
+      url += `sortBy=${sortBy}&order=${order}&`;
+    }
+
+    const response = await fetch(url);
     if (!response.ok) throw new Error('API error');
     const data = await response.json();
     allPaths = data.map((p) => ({ ...p, items: p.items || [] }));
