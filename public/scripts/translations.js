@@ -33,13 +33,13 @@ const translations = {
     post1_title: "Warli Festival Begins in Palghar",
     post1_village: "Palghar, Maharashtra",
     post1_content:
-      "The annual Warli harvest festival kicked off with traditional dance and painting ceremonies. Over 200 villagers participated.",
+      "The annual **Warli** harvest festival kicked off with traditional dance and painting ceremonies.\n\n* Over 200 villagers participated.\n* Features live art demonstrations.",
     post1_type: "Festival",
 
     post2_title: "New Pottery Workshop Opens",
     post2_village: "Khurja, Uttar Pradesh",
     post2_content:
-      "Local artisan Ramesh Kumhar has opened a free pottery workshop for village youth, teaching traditional blue pottery techniques.",
+      "Local artisan _Ramesh Kumhar_ has opened a free pottery workshop for village youth, teaching **traditional blue pottery** techniques.",
     post2_type: "Craft",
 
     post3_title: "Elder Storytelling Session Recorded",

@@ -86,7 +86,7 @@ console.log("POST 1 TITLE:", tr?.post1_title);
     <div class="post-card">
         <h4>${tr[post.titleKey]}</h4>
         <p class="post-meta">${tr[post.villageKey]} • ${formatDate(post.timestamp)}</p>
-        <p>${tr[post.contentKey]}</p>
+        <div class="post-content markdown-body">${renderMarkdown(tr[post.contentKey] || '')}</div>
         <span style="display:inline-block;padding:0.25rem 0.75rem;background:var(--primary-color);border-radius:20px;font-size:0.85rem;margin-top:1rem;color:white">
             ${tr[post.typeKey]}
         </span>

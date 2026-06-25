@@ -1,46 +1,128 @@
+// Map Page JavaScript
+
 let map;
 let markers = [];
 let heatmapLayer = null;
 let ambientSoundEnabled = true;
-let toggleSound = true;
 let currentSound = null;
 let heatmapMarkers = [];
 
-let currentLanguage =
-  localStorage.getItem('parampara_lang') ||
-  localStorage.getItem('language') ||
-  'en';
+let currentLanguage = localStorage.getItem('language') || 'en';
 
 document.addEventListener('DOMContentLoaded', () => {
   const selector = document.getElementById('language-selector');
+  selector.value = currentLanguage;
 
-  if (selector) {
-    selector.value = currentLanguage;
+  // selector.addEventListener("change", (e) => {
+  //     currentLanguage = e.target.value;
+  //     localStorage.setItem("language", currentLanguage);
 
-    selector.addEventListener('change', (e) => {
-      currentLanguage = e.target.value;
+  //     // Re-apply language labels on existing style
+  //     setMapLanguage(currentLanguage);
+  //     addVillageMarkers(); // re-render markers with new language
+  //     translatePage();
+  // });
+  selector.addEventListener('change', (e) => {
+    currentLanguage = e.target.value;
 
-      localStorage.setItem('parampara_lang', currentLanguage);
-      localStorage.setItem('language', currentLanguage);
+    localStorage.setItem('language', currentLanguage);
 
-      if (map && map.isStyleLoaded()) {
-        setMapLanguage(currentLanguage);
-      }
+    if (map && map.isStyleLoaded()) {
+      setMapLanguage(currentLanguage);
+    }
 
-      if (map) {
-        addVillageMarkers();
-      }
+    if (map) {
+      addVillageMarkers();
+    }
 
-      translatePage();
-    });
-  }
+    translatePage();
+  });
 
   initializeMap();
   setupEventListeners();
   translatePage();
 });
 
-�गीते'],
+const sampleVillages = [
+  {
+    name: {
+      en: 'Sundarbans Village',
+      hi: 'सुंदरबन गांव',
+      mr: 'सुंदरबन गाव',
+    },
+    coordinates: [21.9497, 88.8156],
+    traditions: {
+      en: [
+        'Folk tales about tigers',
+        'Traditional fishing methods',
+        'Honey collection rituals',
+      ],
+      hi: [
+        'बाघों की लोककथाएँ',
+        'पारंपरिक मछली पकड़ने की विधियाँ',
+        'शहद संग्रह अनुष्ठान',
+      ],
+      mr: ['वाघांच्या लोककथा', 'पारंपरिक मासेमारी पद्धती', 'मध संकलन विधी'],
+    },
+    festivals: {
+      en: ['Bonbibi Puja', 'Honey Festival'],
+      hi: ['बोनबिबी पूजा', 'हनी फेस्टिवल'],
+      mr: ['बोनबिबी पूजा', 'हनी फेस्टिवल'],
+    },
+    crafts: {
+      en: ['Coconut shell crafts', 'Traditional boat making'],
+      hi: ['नारियल शिल्प', 'पारंपरिक नाव निर्माण'],
+      mr: ['नारळ हस्तकला', 'पारंपरिक होडी निर्मिती'],
+    },
+    description: {
+      en: 'A village in the Sundarbans known for its unique relationship with nature and tigers.',
+      hi: 'सुंदरबन का एक गांव जो प्रकृति और बाघों के साथ अपने अनोखे संबंध के लिए प्रसिद्ध है।',
+      mr: 'निसर्ग आणि वाघांशी असलेल्या अनोख्या नात्यासाठी प्रसिद्ध गाव.',
+    },
+    ambientSound: 'birds',
+  },
+
+  {
+    name: {
+      en: 'Kantha Village, Bengal',
+      hi: 'कांथा गांव, बंगाल',
+      mr: 'कांथा गाव, बंगाल',
+    },
+    coordinates: [22.5726, 88.3639],
+    traditions: {
+      en: ['Kantha embroidery', 'Oral storytelling', 'Traditional songs'],
+      hi: ['कांथा कढ़ाई', 'मौखिक कथाएँ', 'पारंपरिक गीत'],
+      mr: ['कांथा भरतकाम', 'लोककथा', 'पारंपरिक गीते'],
+    },
+    festivals: {
+      en: ['Durga Puja', 'Kali Puja'],
+      hi: ['दुर्गा पूजा', 'काली पूजा'],
+      mr: ['दुर्गा पूजा', 'काली पूजा'],
+    },
+    crafts: {
+      en: ['Kantha stitch work', 'Traditional sarees'],
+      hi: ['कांथा सिलाई', 'पारंपरिक साड़ियाँ'],
+      mr: ['कांथा शिवणकाम', 'पारंपरिक साड्या'],
+    },
+    description: {
+      en: 'Famous for Kantha embroidery, where old saris are layered and stitched.',
+      hi: 'कांथा कढ़ाई के लिए प्रसिद्ध, जिसमें पुरानी साड़ियों को जोड़कर सुंदर डिज़ाइन बनाए जाते हैं।',
+      mr: 'कांथा भरतकामासाठी प्रसिद्ध.',
+    },
+    ambientSound: 'flute',
+  },
+
+  {
+    name: {
+      en: 'Madhubani Village, Bihar',
+      hi: 'मधुबनी गांव, बिहार',
+      mr: 'मधुबनी गाव, बिहार',
+    },
+    coordinates: [26.3537, 86.0719],
+    traditions: {
+      en: ['Madhubani painting', 'Mithila art', 'Folk songs'],
+      hi: ['मधुबनी चित्रकला', 'मिथिला कला', 'लोकगीत'],
+      mr: ['मधुबनी चित्रकला', 'मिथिला कला', 'लोकगीते'],
     },
     festivals: {
       en: ['Chhath Puja', 'Teej'],
@@ -242,7 +324,7 @@ function addVillageMarker(village) {
     offset: 25,
   }).setHTML(`
       <h3>${village.name[currentLanguage]}</h3>
-      <p>${village.description[currentLanguage]}</p>
+      <div class="markdown-body">${renderMarkdown(village.description[currentLanguage])}</div>
   `);
 
   const marker = new maplibregl.Marker(el)
@@ -331,11 +413,11 @@ function showVillageInfo(village) {
   villageName.textContent = village.name[currentLanguage];
 
   infoContent.innerHTML = `
-        <p>
+        <div class="markdown-body">
             <strong>${t.description}:</strong>
            
-            ${village.description[currentLanguage]}
-        </p>
+            ${renderMarkdown(village.description[currentLanguage])}
+        </div>
 
         <div class="village-details">
 
@@ -505,7 +587,7 @@ function showPopup(item) {
       : '';
 
   infoContent.innerHTML = `
-        <p><strong>${t.description}:</strong> ${item.description || ''}</p>
+        <div class="markdown-body"><strong>${t.description}:</strong><br> ${renderMarkdown(item.description || '')}</div>
         <p><strong>${t.location}:</strong> ${item.location || ''}</p>
         ${tagsHtml}
     `;

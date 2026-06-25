@@ -323,6 +323,11 @@
         CRITICAL LOAD ORDER — translations.js MUST come before paths.js
         so PARAMPARA_TRANSLATIONS exists when paths.js calls tPath()
     -->
+    <!-- Markdown Support -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+    <script src="scripts/markdown.js"></script>
+
     <script src="scripts/translations.js"></script>
     <script src="scripts/paths.js"></script>
     <script src="scripts/languageSwitcher.js"></script>

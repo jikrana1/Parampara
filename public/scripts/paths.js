@@ -347,7 +347,7 @@ function displayPathStep() {
             }
             <h4>${escapeHtml(stepItem.title)}</h4>
             <p><strong>${tPath('paths_location_label')}:</strong> ${escapeHtml(stepItem.location)}</p>
-            <p>${escapeHtml(stepItem.description)}</p>
+            <div class="markdown-body">${renderMarkdown(stepItem.description)}</div>
             ${audioHTML}
         </div>`;
 

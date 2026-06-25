@@ -570,7 +570,7 @@ function openModal(traditionId) {
 
     <div class="modal-section">
       <h4><i class="ti ti-book" aria-hidden="true"></i> Historical Description</h4>
-      <p>${escapeHtml(tradition.description)}</p>
+      <div class="markdown-body">${renderMarkdown(tradition.description)}</div>
     </div>
 
     ${

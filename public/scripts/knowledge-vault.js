@@ -35,7 +35,7 @@ const KNOWLEDGE_SAMPLE = [
     elderName: 'Dadi Sukmati Bai',
     category: 'Traditional Recipes',
     description:
-      'Before the monsoon rains, grandmothers gather fallen mahua flowers at dawn when dew still clings to the petals. The flowers are sun-dried on bamboo mats for three days, then ground with coarse rice into a dough that needs no additional sweetener. Elders say the roti must be cooked on a clay tawa that has never touched oil — only then does the natural fragrance rise like incense. Children were traditionally given the first roti to bless the harvest season.',
+      'Before the monsoon rains, grandmothers gather fallen **mahua flowers** at dawn when dew still clings to the petals.\n\n### The Process\n1. Flowers are sun-dried on bamboo mats for three days.\n2. Ground with coarse rice into a dough.\n3. Cooked on a clay tawa that has never touched oil.\n\n> Children were traditionally given the first roti to bless the harvest season.',
     audioUrl:
       'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
     imageUrl:
@@ -420,7 +420,7 @@ function buildKnowledgeCard(entry) {
           </span>
         </div>
         <span class="knowledge-card-category">${escapeHtml(entry.category)}</span>
-        <p class="knowledge-card-description">${escapeHtml(truncated)}</p>
+        <div class="knowledge-card-description markdown-body">${renderMarkdown(truncated, true)}</div>
         <div class="knowledge-card-elder">
           <i class="ti ti-user-heart" aria-hidden="true"></i>
           ${escapeHtml(entry.elderName)}
@@ -468,7 +468,7 @@ function buildModalContent(entry) {
 
     <div class="modal-section">
       <h4><i class="ti ti-book" aria-hidden="true"></i> Full Description</h4>
-      <p>${escapeHtml(entry.description)}</p>
+      <div class="markdown-body">${renderMarkdown(entry.description)}</div>
     </div>
 
     ${

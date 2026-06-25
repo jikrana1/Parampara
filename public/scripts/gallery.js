@@ -142,7 +142,7 @@ function displayItems(items) {
                     <span class="gallery-item-location-marker">📍</span> <strong>${escapeHtml(item.location)}</strong>
                 </div>
                 <h3>${escapeHtml(item.title)}</h3>
-                <p>${escapeHtml(item.description.substring(0, 100))}${item.description.length > 100 ? '...' : ''}</p>
+                <div class="markdown-body" style="font-size:0.9rem; margin-bottom:1rem;">${renderMarkdown(item.description.substring(0, 100) + (item.description.length > 100 ? '...' : ''), true)}</div>
                 ${
                   item.tags && item.tags.length > 0
                     ? `

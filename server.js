@@ -31,7 +31,7 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", 'https://unpkg.com'],
+        scriptSrc: ["'self'", 'https://unpkg.com', 'https://cdn.jsdelivr.net', 'https://cdnjs.cloudflare.com'],
         styleSrc: ["'self'", "'unsafe-inline'", 'https://unpkg.com'],
         imgSrc: [
           "'self'",
