@@ -146,23 +146,47 @@
         </p>
       </div>
 
-      <div class="paths-filter-bar">
-        <div class="filter-group">
-          <label for="theme-filter" data-i18n="filter_theme_label">Theme</label>
-          <input type="text" id="theme-filter" placeholder="Search by theme..." data-i18n-placeholder="filter_theme_placeholder" />
-        </div>
-        <div class="filter-group">
-          <label for="sort-filter" data-i18n="filter_sort_label">Sort By</label>
-          <select id="sort-filter">
-            <option value="" data-i18n="sort_default">Default</option>
-            <option value="itemCount_asc" data-i18n="sort_items_asc">Item Count: Low to High</option>
-            <option value="itemCount_desc" data-i18n="sort_items_desc">Item Count: High to Low</option>
+      <!-- ── Filter & Sort Controls ─────────────────────────────────────── -->
+      <div class="paths-controls" id="paths-controls">
+        <div class="control-group">
+          <label for="theme-filter" data-i18n="paths_filter_theme_label">Filter by Theme</label>
+          <select id="theme-filter" aria-label="Filter heritage paths by theme">
+            <option value="" data-i18n="paths_filter_all_themes">All Themes</option>
           </select>
         </div>
-        <button id="apply-filters-btn" class="btn btn-secondary" data-i18n="filter_apply_btn">Apply</button>
-        <button id="clear-filters-btn" class="btn btn-secondary" style="display:none;" data-i18n="filter_clear_btn">Clear</button>
+
+        <div class="control-group">
+          <label for="sort-select" data-i18n="paths_sort_label">Sort by</label>
+          <select id="sort-select" aria-label="Sort heritage paths">
+            <option value="" data-i18n="paths_sort_default">Default</option>
+            <option value="itemCount" data-i18n="paths_sort_item_count">Number of Items</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="order-select" data-i18n="paths_order_label">Order</label>
+          <select id="order-select" aria-label="Sort order">
+            <option value="desc" data-i18n="paths_order_desc">Most → Least</option>
+            <option value="asc" data-i18n="paths_order_asc">Least → Most</option>
+          </select>
+        </div>
+
+        <div class="controls-actions">
+          <div id="active-filters" class="active-filters" aria-live="polite"></div>
+          <button
+            id="clear-filters-btn"
+            class="btn btn-ghost"
+            data-i18n="paths_clear_filters_btn"
+            hidden
+          >
+            Clear All
+          </button>
+        </div>
       </div>
-      
+
+      <!-- Results count indicator -->
+      <p id="paths-results-count" class="paths-results-count" aria-live="polite"></p>
+
       <div id="paths-list" class="paths-list">
         <!-- Paths will be loaded dynamically -->
       </div>

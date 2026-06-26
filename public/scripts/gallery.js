@@ -1,13 +1,19 @@
 // Gallery Page JavaScript
 
 let allItems = [];
+let currentPage = 1;
+const limit = 10;
+let isLoading = false;
+let hasMore = true;
+let observer = null;
 
 // SVG hearts (inline, no font dependency)
 const HEART_FILLED = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#e53e3e" stroke="#e53e3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>';
 const HEART_EMPTY  = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>';
 
 document.addEventListener('DOMContentLoaded', () => {
-  loadGalleryItems();
+  setupIntersectionObserver();
+  loadGalleryItems(1, false);
   setupEventListeners();
   setupFavDelegation();  // ← single listener handles ALL heart clicks
   setupShareDelegation();
@@ -89,15 +95,71 @@ function setupEventListeners() {
     .addEventListener('change', filterItems);
 }
 
-async function loadGalleryItems() {
+function setupIntersectionObserver() {
+  const sentinel = document.getElementById('intersection-sentinel');
+  if (!sentinel) return;
+
+  observer = new IntersectionObserver((entries) => {
+    const entry = entries[0];
+    if (entry.isIntersecting && !isLoading && hasMore) {
+      currentPage++;
+      loadGalleryItems(currentPage, true);
+    }
+  }, {
+    root: null,
+    rootMargin: '100px',
+    threshold: 0.1
+  });
+
+  observer.observe(sentinel);
+}
+
+async function loadGalleryItems(page = 1, append = false) {
+  if (isLoading || !hasMore && append) return;
+  
+  isLoading = true;
+  const loadingIndicator = document.getElementById('loading-indicator');
+  if (loadingIndicator && append) loadingIndicator.style.display = 'flex';
+
   try {
-    const response = await fetch('/api/items');
-    allItems = await response.json();
-    displayItems(allItems);
+    const searchTerm = document.getElementById('search-input').value.trim();
+    const typeFilter = document.getElementById('type-filter').value;
+    
+    let url = `/api/items?page=${page}&limit=${limit}`;
+    if (typeFilter !== 'all') url += `&type=${typeFilter}`;
+    if (searchTerm) url += `&search=${encodeURIComponent(searchTerm)}`;
+
+    const response = await fetch(url);
+    const result = await response.json();
+    
+    // Check if new format
+    let items = [];
+    if (result && result.data && result.meta) {
+      items = result.data;
+      hasMore = result.meta.currentPage < result.meta.totalPages;
+    } else {
+      // Fallback if backend not updated
+      items = Array.isArray(result) ? result : [];
+      hasMore = false;
+    }
+
+    if (append) {
+      allItems = [...allItems, ...items];
+    } else {
+      allItems = items;
+    }
+    
+    displayItems(allItems, append);
   } catch (error) {
     console.error('Error loading items:', error);
-    allItems = getSampleItems();
-    displayItems(allItems);
+    if (!append) {
+      allItems = getSampleItems();
+      displayItems(allItems, false);
+    }
+    hasMore = false;
+  } finally {
+    isLoading = false;
+    if (loadingIndicator) loadingIndicator.style.display = 'none';
   }
 }
 
@@ -132,10 +194,10 @@ function getEmptyStateHtml() {
 
 // Re-render on language change
 window.addEventListener('parampara:langchange', () => {
-  displayItems(getCurrentFilteredItems());
+  displayItems(allItems, false);
 });
 
-function displayItems(items) {
+function displayItems(items, append = false) {
   const galleryGrid = document.getElementById('gallery-grid');
 
   if (!items || items.length === 0) {
@@ -143,7 +205,7 @@ function displayItems(items) {
     return;
   }
 
-  galleryGrid.innerHTML = items
+  const itemsHtml = items
     .map((item) => {
       const isFav = !!(window.FavoritesManager && window.FavoritesManager.isFavorite(item.id));
       const heartSvg = isFav ? HEART_FILLED : HEART_EMPTY;
@@ -194,6 +256,18 @@ function displayItems(items) {
     `;
     })
     .join('');
+    
+  if (append) {
+    // If appending and empty state was there, clear it first
+    if (galleryGrid.innerHTML.includes('gallery_empty_title')) {
+      galleryGrid.innerHTML = itemsHtml;
+    } else {
+      // Append without breaking existing elements
+      galleryGrid.insertAdjacentHTML('beforeend', itemsHtml);
+    }
+  } else {
+    galleryGrid.innerHTML = itemsHtml;
+  }
 }
 
 function getTypeIcon(type) {
@@ -201,30 +275,10 @@ function getTypeIcon(type) {
   return icons[type] || '📄';
 }
 
-function getCurrentFilteredItems() {
-  const searchTerm = document
-    .getElementById('search-input')
-    .value.toLowerCase();
-  const typeFilter = document.getElementById('type-filter').value;
-  let filtered = allItems;
-  if (typeFilter !== 'all') {
-    filtered = filtered.filter((item) => item.type === typeFilter);
-  }
-  if (searchTerm) {
-    filtered = filtered.filter(
-      (item) =>
-        item.title.toLowerCase().includes(searchTerm) ||
-        item.description.toLowerCase().includes(searchTerm) ||
-        item.location.toLowerCase().includes(searchTerm) ||
-        (item.tags &&
-          item.tags.some((tag) => tag.toLowerCase().includes(searchTerm)))
-    );
-  }
-  return filtered;
-}
-
 function filterItems() {
-  displayItems(getCurrentFilteredItems());
+  currentPage = 1;
+  hasMore = true;
+  loadGalleryItems(currentPage, false);
 }
 
 async function handleAddItem(e) {
@@ -287,8 +341,11 @@ async function handleAddItem(e) {
 
     if (response.ok) {
       const newItem = await response.json();
-      allItems.push(newItem);
-      displayItems(allItems);
+      // Since it's a new item and we're paginated, ideally we just reload the first page 
+      // or if we're on page 1, insert at the beginning. We can just reload for simplicity.
+      currentPage = 1;
+      hasMore = true;
+      loadGalleryItems(1, false);
       e.target.reset();
       document.getElementById('add-item-modal').classList.remove('active');
       alert(tGallery('gallery_item_added'));
