@@ -145,6 +145,7 @@ window.addEventListener("parampara:langchange", () => {
 
 document.addEventListener("DOMContentLoaded", async () => {
   await loadVillagePosts();
+  initVillagePostsWebSocket();
 
   // ===== HAMBURGER NAV =====
   const hamburgerBtn = document.getElementById("hamburgerBtn");
@@ -178,3 +179,79 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (e.key === "Escape") toggleNavMenu(false);
   });
 });
+
+// --- Real-Time WebSocket Logic ---
+const receivedPostIds = new Set();
+let wsReconnectDelay = 1000;
+
+function initVillagePostsWebSocket() {
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const wsUrl = `${protocol}//${window.location.host}`;
+  const ws = new WebSocket(wsUrl);
+
+  ws.onopen = () => {
+    console.log("WebSocket connected to Village Posts stream.");
+    wsReconnectDelay = 1000;
+  };
+
+  ws.onmessage = (event) => {
+    try {
+      const data = JSON.parse(event.data);
+      if (data.type === 'NEW_POST' && data.payload) {
+        handleNewVillagePost(data.payload);
+      }
+    } catch (err) {
+      console.error("Error parsing WS message:", err);
+    }
+  };
+
+  ws.onclose = () => {
+    console.warn(`WebSocket disconnected. Reconnecting in ${wsReconnectDelay}ms...`);
+    setTimeout(initVillagePostsWebSocket, wsReconnectDelay);
+    wsReconnectDelay = Math.min(wsReconnectDelay * 2, 30000);
+  };
+
+  ws.onerror = (err) => {
+    console.error("WebSocket error:", err);
+    ws.close();
+  };
+}
+
+function handleNewVillagePost(post) {
+  if (receivedPostIds.has(post.id)) return;
+  receivedPostIds.add(post.id);
+
+  const postsGrid = document.getElementById("village-posts");
+  if (!postsGrid) return;
+
+  const lang = localStorage.getItem("parampara_lang") || "en";
+  const tr = translations[lang] || {};
+  
+  const title = tr[post.titleKey] || post.title || "New Post";
+  const village = tr[post.villageKey] || post.village || "Unknown Village";
+  const content = tr[post.contentKey] || post.content || "";
+  const type = tr[post.typeKey] || post.type || "Update";
+
+  const postHtml = `
+    <div class="post-card new-post" style="opacity: 0; transform: translateY(-20px); transition: all 0.5s ease;">
+        <h4>${title}</h4>
+        <p class="post-meta">${village} • ${formatDate(post.timestamp)}</p>
+        <div class="post-content markdown-body">${renderMarkdown(content)}</div>
+        <span style="display:inline-block;padding:0.25rem 0.75rem;background:var(--primary-color);border-radius:20px;font-size:0.85rem;margin-top:1rem;color:white">
+            ${type}
+        </span>
+    </div>
+  `;
+
+  postsGrid.insertAdjacentHTML("afterbegin", postHtml);
+
+  requestAnimationFrame(() => {
+    const newEl = postsGrid.firstElementChild;
+    if (newEl) {
+      // Trigger reflow
+      void newEl.offsetWidth; 
+      newEl.style.opacity = "1";
+      newEl.style.transform = "translateY(0)";
+    }
+  });
+}
