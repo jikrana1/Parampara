@@ -817,7 +817,6 @@ body > * {
   color: var(--warm-beige);
   border-top: 2px solid rgba(205, 133, 63, 0.3);
   position: relative;
-  overflow: hidden;
   padding: 3rem 2rem 0;
 }
 
