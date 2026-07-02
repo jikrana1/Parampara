@@ -1,0 +1,132 @@
+/* Skeleton Screen UI Engine Styles */
+
+:root {
+  --skeleton-base: #e0e0e0;
+  --skeleton-shine: #f5f5f5;
+  --skeleton-border: rgba(0, 0, 0, 0.05);
+}
+
+/* Dark mode compatibility based on Parampara theme toggle */
+body.dark-mode {
+  --skeleton-base: #2a2a35;
+  --skeleton-shine: #3a3a4a;
+  --skeleton-border: rgba(255, 255, 255, 0.05);
+}
+
+.skeleton {
+  background: var(--skeleton-base);
+  background-image: linear-gradient(
+    90deg,
+    var(--skeleton-base) 0px,
+    var(--skeleton-shine) 50%,
+    var(--skeleton-base) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Specific Skeleton Components */
+.skeleton-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--theme-card-bg, var(--warm-beige, #f9f6f0));
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px var(--skeleton-border);
+  height: 100%;
+  min-height: 300px;
+}
+
+body.dark-mode .skeleton-card {
+  background: var(--theme-card-bg, #2a2a2a);
+}
+
+.skeleton-card-img {
+  width: 100%;
+  height: 200px;
+  border-radius: 0; /* fills the top of the card */
+}
+
+.skeleton-card-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.skeleton-text {
+  height: 1rem;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.skeleton-text.title {
+  height: 1.5rem;
+  width: 70%;
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-text.short {
+  width: 40%;
+}
+
+.skeleton-text.badge {
+  height: 1.2rem;
+  width: 60px;
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-text.tags {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+.skeleton-text.tags .skeleton-tag {
+  height: 1.5rem;
+  width: 60px;
+  border-radius: 16px;
+}
+
+/* List Skeleton */
+.skeleton-list-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--skeleton-border);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  background: var(--theme-card-bg, transparent);
+}
+
+.skeleton-list-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.skeleton-list-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  justify-content: center;
+}
+
+/* Container transitions */
+.skeleton-container {
+  display: contents;
+}

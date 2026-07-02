@@ -11,9 +11,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    initVillagePostsWebSocket();
+    initVillagePostsSSE();
   } catch (err) {
-    console.error("Failed to initialize WebSocket:", err);
+    console.error("Failed to initialize SSE:", err);
   }
 });
 
@@ -87,6 +87,11 @@ async function loadVillagePosts() {
 
 function renderPosts(container, posts, isDummy) {
   const lang = localStorage.getItem("parampara_lang") || "en";
+  
+  if (typeof translations === 'undefined' || !translations[lang]) {
+    console.warn("Translations not loaded yet, skipping renderPosts");
+    return;
+  }
   const tr = translations[lang];
 
   container.innerHTML = posts
@@ -94,7 +99,7 @@ function renderPosts(container, posts, isDummy) {
       (post) => `
     <div class="post-card">
         <h4>${tr[post.titleKey]}</h4>
-        <p class="post-meta">${tr[post.villageKey]} • ${formatDate(post.timestamp)}</p>
+        <p class="post-meta">📍 ${tr[post.villageKey]} · 📅 ${formatDate(post.timestamp)}</p>
         <div class="post-content markdown-body">${renderMarkdown(tr[post.contentKey] || '')}</div>
         <span style="display:inline-block;padding:0.25rem 0.75rem;background:var(--primary-color);border-radius:20px;font-size:0.85rem;margin-top:1rem;color:white">
             ${tr[post.typeKey]}
@@ -135,27 +140,28 @@ window.addEventListener("parampara:langchange", () => {
   loadVillagePosts();
 });
 
-// --- Real-Time WebSocket Logic ---
+// --- Real-Time SSE Logic ---
 const receivedPostIds = new Set();
-let wsReconnectDelay = 1000;
+let sseReconnectDelay = 1000;
 
-function initVillagePostsWebSocket() {
-  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const wsUrl = `${protocol}//${window.location.host}`;
-  const ws = new WebSocket(wsUrl);
+function initVillagePostsSSE() {
+  const sseUrl = '/api/posts/stream';
+  const eventSource = new EventSource(sseUrl);
 
-  ws.onmessage = (event) => {
+  eventSource.addEventListener('NEW_POST', (event) => {
     try {
-      const data = JSON.parse(event.data);
-      if (data.type === 'NEW_POST' && data.payload) {
-        handleNewVillagePost(data.payload);
+      const payload = JSON.parse(event.data);
+      if (payload) {
+        handleNewVillagePost(payload);
       }
-    } catch (err) { console.error("Error parsing WS message:", err); }
-  };
+    } catch (err) {
+      console.error("Error parsing SSE message:", err);
+    }
+  });
 
-  ws.onclose = () => {
-    setTimeout(initVillagePostsWebSocket, wsReconnectDelay);
-    wsReconnectDelay = Math.min(wsReconnectDelay * 2, 30000);
+  eventSource.onerror = (err) => {
+    console.error("EventSource failed:", err);
+    // EventSource auto-reconnects natively, but we can log errors.
   };
 }
 
@@ -167,7 +173,11 @@ function handleNewVillagePost(post) {
   if (!postsGrid) return;
 
   const lang = localStorage.getItem("parampara_lang") || "en";
-  const tr = translations[lang] || {};
+  
+  if (typeof translations === 'undefined' || !translations[lang]) {
+    return;
+  }
+  const tr = translations[lang];
   
   const postHtml = `
     <div class="post-card new-post" style="opacity: 0; transform: translateY(-20px); transition: all 0.5s ease;">
