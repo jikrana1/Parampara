@@ -1,4 +1,8 @@
-const CACHE_NAME = 'parampara-cache-v1';
+const CACHE_VERSION = 'v2';
+const CORE_CACHE = `parampara-core-${CACHE_VERSION}`;
+const API_CACHE = `parampara-api-${CACHE_VERSION}`;
+const MEDIA_CACHE = `parampara-media-${CACHE_VERSION}`;
+
 const CORE_ASSETS = [
   '/',
   '/index.html',
@@ -10,14 +14,14 @@ const CORE_ASSETS = [
   '/scripts/theme.js',
   '/scripts/languageSwitcher.js',
   '/scripts/cacheLayer.js',
-  '/scripts/sw-register.js'
+  '/scripts/sw-register.js',
+  '/scripts/audio-visualizer.js'
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
+    caches.open(CORE_CACHE).then((cache) => {
       console.log('[ServiceWorker] Caching core assets');
-      // addAll will fail if any request fails, so it's good for core assets
       return cache.addAll(CORE_ASSETS).catch(error => {
         console.warn('[ServiceWorker] Failed to cache some assets', error);
       });
@@ -27,11 +31,12 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('activate', (event) => {
+  const currentCaches = [CORE_CACHE, API_CACHE, MEDIA_CACHE];
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
+          if (!currentCaches.includes(cacheName) && cacheName.startsWith('parampara-')) {
             console.log('[ServiceWorker] Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
@@ -43,39 +48,94 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Only handle GET requests
   if (event.request.method !== 'GET') return;
-  // Ignore API requests if we want, but let's let cacheLayer handle API caching or we can intercept here.
-  // The cache-first strategy applies nicely to static assets.
   
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      // 1. Cache hit
-      if (cachedResponse) {
-        return cachedResponse;
-      }
+  const url = new URL(event.request.url);
 
-      // 2. Network fetch
-      return fetch(event.request)
-        .then((response) => {
-          // Can optionally cache new assets dynamically
-          return response;
-        })
-        .catch(() => {
-          // 3. Fallback on network failure
-          // If the request was for a page (navigation), return the offline page
-          if (event.request.mode === 'navigate') {
-            return caches.match('/offline.html');
-          }
-          // Optional: Return a generic offline image for image requests
-        });
-    })
-  );
+  // Strategy 1: Network First for APIs
+  if (url.pathname.startsWith('/api/')) {
+    event.respondWith(networkFirst(event.request, API_CACHE));
+    return;
+  }
+
+  // Strategy 2: Cache First for Media (Images, Audio, Maps)
+  if (event.request.destination === 'image' || 
+      event.request.destination === 'audio' || 
+      url.hostname.includes('maptiler') ||
+      url.pathname.endsWith('.mp3')) {
+    event.respondWith(cacheFirst(event.request, MEDIA_CACHE));
+    return;
+  }
+
+  // Strategy 3: Stale While Revalidate for Core Assets & Pages
+  event.respondWith(staleWhileRevalidate(event.request, CORE_CACHE));
 });
 
+async function networkFirst(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  try {
+    const networkResponse = await fetch(request);
+    // Dynamic caching
+    if (networkResponse.ok && networkResponse.status === 200) {
+      cache.put(request, networkResponse.clone());
+    }
+    return networkResponse;
+  } catch (error) {
+    const cachedResponse = await cache.match(request);
+    if (cachedResponse) {
+      return cachedResponse;
+    }
+    throw error;
+  }
+}
+
+async function cacheFirst(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  const cachedResponse = await cache.match(request);
+  if (cachedResponse) {
+    return cachedResponse;
+  }
+  
+  try {
+    const networkResponse = await fetch(request);
+    if (networkResponse.ok && networkResponse.status === 200) {
+      cache.put(request, networkResponse.clone());
+    }
+    return networkResponse;
+  } catch (error) {
+    if (request.mode === 'navigate') {
+       return cache.match('/offline.html');
+    }
+    throw error;
+  }
+}
+
+async function staleWhileRevalidate(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  const cachedResponse = await cache.match(request);
+  
+  const fetchPromise = fetch(request).then(networkResponse => {
+    if (networkResponse.ok && networkResponse.status === 200) {
+      cache.put(request, networkResponse.clone());
+    }
+    return networkResponse;
+  }).catch(() => null);
+  
+  if (cachedResponse) {
+    return cachedResponse;
+  }
+  
+  const networkResponse = await fetchPromise;
+  if (networkResponse) {
+    return networkResponse;
+  }
+  
+  return caches.match('/offline.html');
+}
+
+// Background Sync (Existing)
 self.addEventListener('sync', (event) => {
   if (event.tag === 'sync-offline-queue') {
-    console.log('[ServiceWorker] Background sync triggered for offline queue');
     event.waitUntil(syncOfflineQueue());
   }
 });
@@ -100,16 +160,13 @@ async function syncOfflineQueue() {
 
     for (const item of queue) {
       if (item.status === 'failed') continue;
-
       try {
         const response = await fetch(item.url, {
           method: item.method,
           headers: item.headers,
           body: item.body
         });
-
         if (response.ok || response.status === 400 || response.status === 422) {
-          // Success or non-retryable error -> remove from queue
           await new Promise((resolve, reject) => {
             const tx = db.transaction(['sync-queue'], 'readwrite');
             const store = tx.objectStore('sync-queue');
@@ -118,17 +175,13 @@ async function syncOfflineQueue() {
             req.onerror = reject;
           });
         } else {
-           // If we hit a 5xx, we might want to let the main thread handle the backoff logic.
-           // Background sync itself has its own backoff mechanism provided by the browser.
            throw new Error(`Server returned ${response.status}`);
         }
       } catch (err) {
-        console.error('[ServiceWorker] Sync failed for item', item.id, err);
-        throw err; // Let the browser background sync know it failed, so it can retry later
+        throw err;
       }
     }
   } catch (err) {
     console.error('[ServiceWorker] IndexedDB access failed', err);
   }
 }
-
