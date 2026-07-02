@@ -216,10 +216,26 @@ app.get('/api/risk-dashboard', (req, res, next) => {
 
 app.get('/api/map-style', async (req, res) => {
   if (!process.env.MAPTILER_KEY) {
-    return res.status(503).json({
-      configured: false,
-      message:
-        'Map tiles require a MapTiler API key. Please add MAPTILER_KEY to your .env file.',
+    // FALLBACK TO OSM IF KEY IS MISSING (Return raw style object like MapTiler does)
+    return res.json({
+      version: 8,
+      sources: {
+        'osm': {
+          type: 'raster',
+          tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+          tileSize: 256,
+          attribution: '&copy; OpenStreetMap Contributors',
+        },
+      },
+      layers: [
+        {
+          id: 'osm-layer',
+          type: 'raster',
+          source: 'osm',
+          minzoom: 0,
+          maxzoom: 19,
+        },
+      ],
     });
   }
 
