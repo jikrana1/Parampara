@@ -22,9 +22,6 @@
     lang = lang || getCurrentLang();
     var dict =
       PARAMPARA_TRANSLATIONS[lang] || PARAMPARA_TRANSLATIONS[DEFAULT_LANG];
-      console.log("Current language:", lang);
-console.log("Translations:", PARAMPARA_TRANSLATIONS);
-console.log("Current dict:", dict);
     return dict[key] !== undefined ? dict[key] : PARAMPARA_TRANSLATIONS[DEFAULT_LANG][key] || key;
   }
 
