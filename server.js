@@ -124,8 +124,8 @@ app.get('/chat', (req, res) => {
 // ==================== RECOMMENDATION ENGINE ROUTES ====================
 
 // Import recommendation routes
-const recommendationRoutes = require('./routes/recommendation.routes');
-app.use('/api/recommendations', recommendationRoutes);
+// const recommendationRoutes = require('./routes/recommendation.routes');
+// app.use('/api/recommendations', recommendationRoutes);
 
 // Recommendations Page Route
 app.get('/recommendations', (req, res) => {
