@@ -14,6 +14,7 @@ const postRoutes = require('./routes/post.routes');
 const chatRoutes = require('./routes/chat.routes');
 const checkinRoutes = require('./routes/checkin.routes');
 const languageRoutes = require('./routes/language.routes');
+const recipeRoutes = require('./routes/recipe.routes');
 
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
@@ -63,10 +64,18 @@ app.use(
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Initialize Data
-const initializeSampleLanguageData = require('./config/sampleLanguageData');
-initializeSampleLanguageData();
+const initializeSampleRecipeData = require('./config/sampleRecipeData');
+initializeSampleRecipeData();
 
-// Home Route
+// API Routes (existing)
+app.use('/api/items', itemRoutes);
+app.use('/api/paths', pathRoutes);
+app.use('/api/progress', progressRoutes);
+app.use('/api/posts', postRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/checkin', checkinRoutes);
+app.use('/api/language', languageRoutes);
+app.use('/api/recipes', recipeRoutes);
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
