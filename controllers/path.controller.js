@@ -189,6 +189,7 @@ const createPath = (req, res, next) =>
         store.heritagePaths.push(newPath);
 
         // Invalidate caches
+        // Invalidate caches
         if (apiCache && typeof apiCache.invalidateByPrefix === 'function')
         {
             apiCache.invalidateByPrefix('/api/paths');

@@ -22,6 +22,7 @@ const csrfRoutes = require('./routes/csrf.routes');
 const cacheRoutes = require('./routes/cache.routes');
 const analyticsRoutes = require('./routes/analytics.routes');
 const searchRoutes = require('./routes/search.routes');
+const notificationRoutes = require('./routes/notification.routes');
 const galleryRoutes = require('./routes/gallery.routes');
 const integrityRoutes = require('./routes/integrity.routes');
 const { csrfProtection } = require('./middleware/csrf');
@@ -213,6 +214,7 @@ app.use('/api/audit', auditRoutes);
 app.use('/api/cache', cacheRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/notifications', notificationRoutes);
 app.use('/api/integrity', integrityRoutes);
 
 const exportRoutes = require('./routes/export.routes');
