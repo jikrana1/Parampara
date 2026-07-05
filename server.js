@@ -13,6 +13,7 @@ const progressRoutes = require('./routes/progress.routes');
 const postRoutes = require('./routes/post.routes');
 const chatRoutes = require('./routes/chat.routes');
 const checkinRoutes = require('./routes/checkin.routes');
+const languageRoutes = require('./routes/language.routes');
 
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
@@ -62,13 +63,14 @@ app.use(
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Initialize Data
-initializeSampleData();
+const initializeSampleLanguageData = require('./config/sampleLanguageData');
+initializeSampleLanguageData();
 
 // Home Route
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-app.get('/api/language', (req, res) => {
+app.get('/api/language/config', (req, res) => {
   res.json({
     default: 'en',
     supported: ['en', 'hi', 'mr'],
@@ -88,6 +90,7 @@ app.use('/api/chat', chatRoutes);
 
 app.use('/api/checkin', checkinRoutes);
 
+app.use('/api/language', languageRoutes);
 app.get('/api/map-style', async (req, res) => {
   if (!process.env.MAPTILER_KEY) {
     return res.status(503).json({

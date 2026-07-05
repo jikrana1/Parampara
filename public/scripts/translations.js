@@ -65,6 +65,17 @@ const translations = {
     post6_content:
       'Gond tribal musicians contributed 50 rare folk songs to the archive, many never recorded before.',
     post6_type: 'Music',
+    language_hero_title: 'Preserve Rural Languages',
+    language_hero_subtitle: 'Discover, hear, and cherish words from villages across the country.',
+    hero_btn_word: 'Word of the Day',
+    hero_btn_explore: 'Explore Vocabulary',
+    word_of_the_day_title: 'Word of the Day',
+    search_title: 'Find a Word',
+    vocab_title: 'Vocabulary',
+    dialect_compare_title: 'Dialect Comparison',
+    compare_btn: 'Compare',
+    favorites_title: 'My Favorites',
+    footer_copy: '© 2024 Parampara. Preserving rural heritage, one story at a time.',
   },
 
   hi: {
