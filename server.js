@@ -400,6 +400,14 @@ app.use('/api/gamification', gamificationRoutes);
 app.get('/gamification', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'gamification.html'));
 });
+// Add event routes
+const eventRoutes = require('./routes/event.routes');
+app.use('/api/events', eventRoutes);
+
+// Events page
+app.get('/events', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'events.html'));
+});
 // ==================== ERROR HANDLING ====================
 
 // 404 Middleware
