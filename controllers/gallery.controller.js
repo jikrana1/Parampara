@@ -2,11 +2,19 @@ const store = require('../data/store');
 
 /**
  * GET /api/gallery
- * Retrieves a list of cultural items for the gallery with pagination support.
+ * Retrieves a list of cultural items for the gallery with pagination and search support.
  */
 const getGallery = (req, res, next) => {
   try {
-    const culturalAssets = store.culturalItems || [];
+    const { search } = req.query;
+    let culturalAssets;
+
+    // Use search engine if query is provided
+    if (search && search.trim() !== '') {
+      culturalAssets = store.searchEngine.search(search, 'culturalItem');
+    } else {
+      culturalAssets = store.culturalItems || [];
+    }
 
     // Parse pagination parameters
     const page = parseInt(req.query.page, 10) || 1;
