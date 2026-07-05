@@ -23,6 +23,8 @@ const cacheRoutes = require('./routes/cache.routes');
 const analyticsRoutes = require('./routes/analytics.routes');
 const searchRoutes = require('./routes/search.routes');
 const integrityRoutes = require('./routes/integrity.routes');
+const authRoutes = require('./routes/auth.routes');
+const userRoutes = require('./routes/user.routes');
 const { csrfProtection } = require('./middleware/csrf');
 
 const store = require('./data/store');
@@ -178,6 +180,8 @@ const globalLimiter = new TokenBucketLimiter({
 app.use('/api', globalLimiter.middleware());
 
 // API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/items', itemRoutes);
 
 // Heritage Score API
@@ -427,9 +431,7 @@ app.use(notFound);
 
 // Error Middleware
 app.use(errorHandler);
-// Add moderation routes
-const moderationRoutes = require('./routes/moderation.routes');
-app.use('/api/moderation', moderationRoutes);
+
 
 // Moderation dashboard page
 app.get('/moderation', (req, res) => {
