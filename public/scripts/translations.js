@@ -79,6 +79,17 @@ const translations = {
   },
 
   hi: {
+    language_hero_title: 'ग्रामीण भाषाओं को संरक्षित करें',
+    language_hero_subtitle: 'ग्रामीण शब्दों को खोजें, सुने और संजोएँ',
+    hero_btn_word: 'शब्द का दिन',
+    hero_btn_explore: 'शब्दावली खोजें',
+    word_of_the_day_title: 'आज का शब्द',
+    search_title: 'शब्द खोजें',
+    vocab_title: 'शब्दावली',
+    dialect_compare_title: 'भाषा तुलना',
+    compare_btn: 'तुलना करें',
+    favorites_title: 'मेरी पसंदीदा'
+
     mapTitle: 'डिजिटल समय यात्रा: ग्रामीण विरासत का अन्वेषण करें',
 
     mapDescription:
@@ -143,7 +154,18 @@ const translations = {
   },
 
   mr: {
+    language_hero_title: 'ग्रामीण भाषा जतन करा',
+    language_hero_subtitle: 'गावांच्या शब्दांशी भेटा, ऐका आणि जतन करा',
+    hero_btn_word: 'दिवसाचा शब्द',
+    hero_btn_explore: 'शब्दसंग्रह अन्वेषण करा',
+    word_of_the_day_title: 'दिवसाचा शब्द',
+    search_title: 'शब्द शोधा',
+    vocab_title: 'शब्दसंग्रह',
+    dialect_compare_title: 'भाषा तुलना',
+    compare_btn: 'तुलना करा',
+    favorites_title: 'माझी आवडते',
     mapTitle: 'डिजिटल टाइम ट्रॅव्हल: ग्रामीण वारसा शोधा',
+
 
     mapDescription:
       'गावांवर क्लिक करून त्यांच्या परंपरा, सण आणि हस्तकला जाणून घ्या',
