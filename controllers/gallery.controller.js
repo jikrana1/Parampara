@@ -13,7 +13,7 @@ const getGallery = (req, res, next) => {
     if (search && search.trim() !== '') {
       culturalAssets = store.searchEngine.search(search, 'culturalItem');
     } else {
-      culturalAssets = store.culturalItems || [];
+      culturalAssets = store.culturalItems ? store.culturalItems.values() : [];
     }
 
     // Create a copy of the array before sorting and filtering to avoid in-place mutation of store database
