@@ -22,6 +22,8 @@ const csrfRoutes = require('./routes/csrf.routes');
 const cacheRoutes = require('./routes/cache.routes');
 const analyticsRoutes = require('./routes/analytics.routes');
 const searchRoutes = require('./routes/search.routes');
+const notificationRoutes = require('./routes/notification.routes');
+const galleryRoutes = require('./routes/gallery.routes');
 const integrityRoutes = require('./routes/integrity.routes');
 const authRoutes = require('./routes/auth.routes');
 const userRoutes = require('./routes/user.routes');
@@ -44,7 +46,12 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", 'https://unpkg.com', 'https://cdn.jsdelivr.net', 'https://cdnjs.cloudflare.com'],
+        scriptSrc: [
+          "'self'",
+          'https://unpkg.com',
+          'https://cdn.jsdelivr.net',
+          'https://cdnjs.cloudflare.com',
+        ],
         styleSrc: ["'self'", "'unsafe-inline'", 'https://unpkg.com'],
         imgSrc: [
           "'self'",
@@ -181,12 +188,20 @@ app.use('/api/csrf-token', csrfRoutes);
 // Apply CSRF protection globally for state-changing routes
 app.use(csrfProtection);
 
-
+// Global API Rate Limiter (100 reqs / 1 min)
+const apiLimiter = new HeuristicRateLimiter({
+  windowMs: 60000,
+  max: 100,
+  message:
+    'Too many API requests from this IP, please try again after a minute.',
+});
+app.use('/api', apiLimiter.middleware());
 
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/items', itemRoutes);
+app.use('/api/gallery', galleryRoutes);
 
 // Heritage Score API
 const heritageScoreRoutes = require('./routes/heritageScore.routes');
@@ -203,6 +218,7 @@ app.use('/api/audit', auditRoutes);
 app.use('/api/cache', cacheRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/notifications', notificationRoutes);
 app.use('/api/integrity', integrityRoutes);
 
 const exportRoutes = require('./routes/export.routes');
@@ -299,7 +315,7 @@ app.get('/api/map-style', async (req, res) => {
     return res.json({
       version: 8,
       sources: {
-        'osm': {
+        osm: {
           type: 'raster',
           tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
           tileSize: 256,

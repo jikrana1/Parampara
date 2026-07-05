@@ -7,6 +7,7 @@
 const store = require('../data/store');
 const { apiCache } = require('../middleware/lruCache');
 const { BoundingBox } = require('../utils/QuadTree');
+const notificationService = require('../server/services/notificationService');
 
 /**
  * Retrieves a list of cultural items with optional search, category filters, and pagination.
@@ -43,6 +44,9 @@ const getItems = (req, res) =>
         if (fullTextSearchQuery)
         {
             culturalAssets = store.searchEngine.search(fullTextSearchQuery, 'culturalItem');
+
+            // Ensure hidden items never reappear in search results
+            culturalAssets = culturalAssets.filter(item => !item.isHidden);
         }
 
         // Filter items based on specified type category (skip if set to 'all')
@@ -118,8 +122,8 @@ const createItem = (req, res) =>
         createdAsset.location = location;
         createdAsset.coordinates = req.body.coordinates || null;
         createdAsset.description = req.body.description || '';
-        createdAsset.imageUrl = req.body.imageUrl || '',
-        createdAsset.audioUrl = req.body.audioUrl || '',
+        createdAsset.imageUrl = req.body.imageUrl || '';
+        createdAsset.audioUrl = req.body.audioUrl || '';
         createdAsset.tags = Array.isArray(req.body.tags)
             ? req.body.tags
             : req.body.tags
@@ -136,9 +140,14 @@ const createItem = (req, res) =>
         apiCache.invalidateByPrefix('/api/items');
         apiCache.invalidateByPrefix('/api/search');
 
-        // Invalidate caches
-        apiCache.invalidateByPrefix('/api/items');
-        apiCache.invalidateByPrefix('/api/search');
+        // Broadcast notification
+        notificationService.broadcast('new_item', {
+            title: createdAsset.title,
+            type: createdAsset.type,
+            location: createdAsset.location,
+            id: createdAsset.id,
+            message: `New cultural asset added: ${createdAsset.title} in ${createdAsset.location}`
+        }, 'community');
 
         // Return the newly created asset
         res.status(201).json(createdAsset);
