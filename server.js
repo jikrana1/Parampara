@@ -190,8 +190,7 @@ app.use('/api/search', searchRoutes);
 const exportRoutes = require('./routes/export.routes');
 app.use('/api/export', exportRoutes);
 
-const moderationRoutes = require('./routes/moderation.routes');
-app.use('/api/moderation', moderationRoutes);
+
 
 // ==================== ADDITIONAL API ENDPOINTS ====================
 
@@ -410,13 +409,12 @@ app.get('/search', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'search.html'));
 });
 // Add gamification routes
-const gamificationRoutes = require('./routes/gamification.routes');
-app.use('/api/gamification', gamificationRoutes);
 
 // Gamification page
 app.get('/gamification', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'gamification.html'));
 });
+
 // Add event routes
 const eventRoutes = require('./routes/event.routes');
 app.use('/api/events', eventRoutes);
@@ -433,10 +431,6 @@ app.use(notFound);
 // Error Middleware
 app.use(errorHandler);
 
-// Moderation dashboard page
-app.get('/moderation', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'moderation.html'));
-});
 // ==================== START SERVER ====================
 
 // Create HTTP server

@@ -192,26 +192,32 @@ router.get('/stats', (req, res, next) =>
  * GET /api/moderation/status
  * Get model status
  */
-router.get('/status', (req, res, next) =>
-{
-    try
-    {
-        const service = getService();
-        const status = service.getModelStatus();
+router.get('/status', (req, res, next) => {
+  try {
+    const service = getService();
+    const status = service.getModelStatus();
 
-        res.json({
-            success: true,
-            status,
-            timestamp: new Date().toISOString()
-        });
-    }
-    catch (error)
-    {
-        next(error);
-    }
+    res.json({
+      success: true,
+      status,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+const { reportItem } = require('../controllers/moderation.controller');
+const SlidingWindowLimiter = require('../middleware/rateLimiter');
+
+// Rate limit for reporting to prevent spam (20 reqs / 1 min)
+const reportLimiter = new SlidingWindowLimiter({
+  windowMs: 60000,
+  max: 20,
+  message: 'Too many reports from this IP, please try again after a minute.'
+});
 });
 
 router.post('/report', reportLimiter.middleware(), reportItem);
 
 module.exports = router;
-
