@@ -1,0 +1,165 @@
+/* timeline.css */
+/* Earthy palette */
+:root {
+  --color-primary: #6B4F4F; /* deep brown */
+  --color-secondary: #A58F8F; /* muted taupe */
+  --color-bg: #F5F0EB; /* light parchment */
+  --color-card-bg: rgba(255, 255, 255, 0.25);
+  --color-card-border: rgba(255, 255, 255, 0.4);
+  --color-shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* Basic page layout */
+.timeline-page {
+  padding: 2rem 1rem;
+  background: var(--color-bg);
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Controls */
+.timeline-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+.timeline-controls input,
+.timeline-controls select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-primary);
+  border-radius: 4px;
+  background: #fff;
+  font-size: 0.95rem;
+}
+.zoom-controls button {
+  padding: 0.4rem 0.8rem;
+  margin-left: 0.25rem;
+  border: 1px solid var(--color-primary);
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.zoom-controls button.active,
+.zoom-controls button:hover {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+/* Progress bar */
+.timeline-progress {
+  width: 100%;
+  height: 4px;
+  background: var(--color-secondary);
+  margin-bottom: 1rem;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.timeline-progress .progress-bar {
+  width: 0%;
+  height: 100%;
+  background: var(--color-primary);
+  transition: width 0.2s ease-out;
+}
+
+/* Timeline container */
+.timeline-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  scroll-behavior: smooth;
+  padding-bottom: 2rem;
+}
+.timeline-container::-webkit-scrollbar {
+  height: 8px;
+}
+.timeline-container::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 4px;
+}
+
+/* Card */
+.timeline-card {
+  flex: 0 0 300px;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px var(--color-shadow);
+  padding: 1rem;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+.timeline-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 16px var(--color-shadow);
+}
+.timeline-card[aria-expanded="true"] {
+  background: rgba(255,255,255,0.4);
+}
+.timeline-card .year {
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+.timeline-card .title {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+.timeline-card .category {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  background: var(--color-secondary);
+  color: #fff;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.timeline-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+.timeline-card .description {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  font-size: 0.9rem;
+}
+.timeline-card[aria-expanded="true"] .description {
+  max-height: 200px; /* enough for a few lines */
+  margin-top: 0.5rem;
+}
+
+/* Zoom variants */
+.timeline-container.compact .timeline-card {
+  flex: 0 0 200px;
+  padding: 0.5rem;
+}
+.timeline-container.detailed .timeline-card {
+  flex: 0 0 350px;
+  padding: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .timeline-container {
+    flex-direction: column;
+    overflow-x: visible;
+  }
+  .timeline-card {
+    flex: 1 0 auto;
+    width: 100%;
+  }
+}
+
+/* Focus styles for accessibility */
+.timeline-card:focus {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
