@@ -151,9 +151,19 @@ app.get('/chat', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'chat.html'));
 });
 
+// Archives Route
+app.get('/archives', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'archives.html'));
+});
+
 // Serve Trivia Game Page
 app.get('/trivia', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'trivia.html'));
+});
+
+// Audio Processing Route
+app.get('/audio', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'audio.html'));
 });
 
 // ==================== RECOMMENDATION ENGINE ROUTES ====================
@@ -224,7 +234,11 @@ app.use('/api/integrity', integrityRoutes);
 const exportRoutes = require('./routes/export.routes');
 app.use('/api/export', exportRoutes);
 
+const archiveRoutes = require('./routes/archive.routes');
+app.use('/api/archives', archiveRoutes);
 
+const audioRoutes = require('./routes/audio.routes');
+app.use('/api/audio', audioRoutes);
 
 // ==================== ADDITIONAL API ENDPOINTS ====================
 
