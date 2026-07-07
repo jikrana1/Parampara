@@ -214,6 +214,7 @@ const PARAMPARA_TRANSLATIONS = {
     nav_home: 'Home',
     nav_map: 'Explore Map',
     nav_gallery: 'Gallery',
+    nav_temples: "Temples of India",
     nav_paths: 'Heritage Paths',
     nav_quest: 'Discovery Quest',
     nav_trails: 'Heritage Trails',
