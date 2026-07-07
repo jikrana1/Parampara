@@ -186,6 +186,13 @@ const createPath = (req, res, next) =>
             theme
         };
 
+        const { hashObject } = require('../server/utils/hashUtils');
+        if (req.body.hash) {
+            newPath.hash = req.body.hash;
+        } else {
+            newPath.hash = hashObject(newPath);
+        }
+
         store.heritagePaths.push(newPath);
 
         // Invalidate caches

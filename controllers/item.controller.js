@@ -131,6 +131,14 @@ const createItem = (req, res) =>
                 : [];
         createdAsset.timestamp = new Date().toISOString();
         createdAsset.authorId = req.user ? req.user.id : null;
+        
+        // Hashing for tamper detection
+        const { hashObject } = require('../server/utils/hashUtils');
+        if (req.body.hash) {
+            createdAsset.hash = req.body.hash;
+        } else {
+            createdAsset.hash = hashObject(createdAsset);
+        }
 
         // Store in memory database and update spatial index
         store.culturalItems.push(createdAsset);
