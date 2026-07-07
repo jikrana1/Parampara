@@ -552,50 +552,59 @@ function addClusterMarker(cluster) {
   });
 }
 
+/**
+ * Populates and reveals the sidebar panel containing cultural information 
+ * for a selected village. Renders Markdown descriptions, list of traditions, 
+ * local festivals, and artisan craft details.
+ * 
+ * @param {Object} village - The village data object to display.
+ */
 function showVillageInfo(village) {
   const t = getTranslation();
-
   const infoPanel = document.getElementById('village-info');
-
   const villageName = document.getElementById('village-name');
-
   const infoContent = document.getElementById('info-content');
 
-  villageName.textContent = village.name[currentLanguage];
+  if (!infoPanel || !villageName || !infoContent) return;
+
+  const currentName = village.name[currentLanguage] || village.name.en || '';
+  const currentDesc = village.description[currentLanguage] || village.description.en || '';
+  
+  const traditionsList = village.traditions[currentLanguage] || village.traditions.en || [];
+  const festivalsList = village.festivals[currentLanguage] || village.festivals.en || [];
+  const craftsList = village.crafts[currentLanguage] || village.crafts.en || [];
+
+  villageName.textContent = currentName;
 
   infoContent.innerHTML = `
-        <div class="markdown-body">
-            <strong>${t.description}:</strong>
-           
-            ${renderMarkdown(village.description[currentLanguage])}
-        </div>
+    <div class="markdown-body">
+      <strong>${t.description}:</strong>
+      ${renderMarkdown(currentDesc)}
+    </div>
 
-        <div class="village-details">
+    <div class="village-details">
+      <div class="detail-item">
+        <h4>🎭 ${t.traditions}</h4>
+        <p>${traditionsList.join(', ')}</p>
+      </div>
 
-            <div class="detail-item">
-                <h4>🎭 ${t.traditions}</h4>
-              ${village.traditions[currentLanguage].join(', ')}
-            </div>
+      <div class="detail-item">
+        <h4>🎉 ${t.festivals}</h4>
+        <p>${festivalsList.join(', ')}</p>
+      </div>
 
-            <div class="detail-item">
-                <h4>🎉 ${t.festivals}</h4>
-                ${village.festivals[currentLanguage].join(', ')}
-            </div>
+      <div class="detail-item">
+        <h4>🎨 ${t.crafts}</h4>
+        <p>${craftsList.join(', ')}</p>
+      </div>
+    </div>
 
-            <div class="detail-item">
-                <h4>🎨 ${t.crafts}</h4>
-                ${village.crafts[currentLanguage].join(', ')}
-            </div>
-
-        </div>
-
-        <div style="margin-top:1.5rem;">
-            <a href="trails.html"
-               class="btn btn-primary">
-               ${t.planVisit}
-            </a>
-        </div>
-    `;
+    <div style="margin-top:1.5rem;">
+      <a href="trails.html" class="btn btn-primary">
+        ${t.planVisit}
+      </a>
+    </div>
+  `;
 
   infoPanel.classList.add('active');
 }
@@ -605,6 +614,10 @@ function playAmbientSound(type) {
   console.log(`Playing ambient sound: ${type}`);
 }
 
+/**
+ * Registers core click handlers and window action listeners on map UI nodes.
+ * Anchors the sidebar panel close event, and binds heatmap/audio buttons.
+ */
 function setupEventListeners() {
   const closeBtn = document.getElementById('close-info');
   const heatmapBtn = document.getElementById('toggle-heatmap');
@@ -633,6 +646,11 @@ function setupEventListeners() {
   setupSpatialSearch();
 }
 
+/**
+ * Configures the spatial proximity search controls.
+ * Uses browser geolocation to locate the user, filters villages using
+ * the Haversine distance formula, and updates the map view and markers dynamically.
+ */
 function setupSpatialSearch() {
   const findNearbyBtn = document.getElementById('btn-find-nearby');
   const radiusSelect = document.getElementById('radius-select');
@@ -650,17 +668,22 @@ function setupSpatialSearch() {
       const userLon = position.coords.longitude;
       const radiusKm = parseFloat(radiusSelect.value);
       
-      // Filter villages based on distance
+      // Filter villages based on Haversine distance calculations
       const nearbyVillages = sampleVillages.filter(village => {
         const [villageLat, villageLon] = village.coordinates;
-        const distance = window.SpatialUtils.calculateHaversineDistance(userLat, userLon, villageLat, villageLon);
+        const distance = window.SpatialUtils.calculateHaversineDistance(
+          userLat, 
+          userLon, 
+          villageLat, 
+          villageLon
+        );
         return distance <= radiusKm;
       });
       
-      // Update markers
+      // Update displayed village markers on the map canvas
       addVillageMarkers(nearbyVillages);
       
-      // Fly to user location
+      // Smoothly animate and fly camera to user coordinates
       if (map) {
         map.flyTo({
           center: [userLon, userLat],
@@ -669,54 +692,58 @@ function setupSpatialSearch() {
         });
       }
       
-      findNearbyBtn.innerHTML = '<i class="ti ti-check"></i> Found ' + nearbyVillages.length;
+      findNearbyBtn.innerHTML = `<i class="ti ti-check"></i> Found ${nearbyVillages.length}`;
       setTimeout(() => {
         findNearbyBtn.innerHTML = originalText;
         findNearbyBtn.disabled = false;
       }, 3000);
       
     } catch (error) {
-      console.error('Location error:', error);
-      alert('Could not determine your location. Please check browser permissions.');
+      console.error('Location determination error:', error);
+      alert('Could not determine your location. Please check browser geolocation permissions.');
       findNearbyBtn.innerHTML = '<i class="ti ti-map-pin"></i> Find Nearby';
       findNearbyBtn.disabled = false;
     }
   });
 
-  // Ensure heritage health view updates when markers are re-added
+  // Ensure heritage health view score colors refresh when markers are rebuilt
   const heritageToggle = document.getElementById('toggle-heritage-health');
   if (heritageToggle) {
     heritageToggle.addEventListener('change', updateMarkerColors);
   }
 }
 
+/**
+ * Toggles the visibility of the cultural density heatmap overlay on the map.
+ * Dynamically renders gradient radial markers centered on village coordinates,
+ * scaling diameter and transparency in correlation to their heritage health vulnerability index.
+ */
 function toggleHeatmap() {
-  if (!map) {
-    return;
-  }
+  if (!map) return;
 
   const t = getTranslation();
 
   if (heatmapLayer) {
-    heatmapMarkers.forEach((m) => m.remove());
+    // Clear and remove existing heatmap layer elements
+    heatmapMarkers.forEach(m => m.remove());
     heatmapMarkers = [];
-    heatmapLayer = null;
-    document.getElementById('toggle-heatmap').textContent = t.toggleHeatmap;
+    heatmapLayer = false;
+    document.getElementById('toggle-heatmap').textContent = t.toggleHeatmap || 'Toggle Heatmap';
   } else {
+    // Build and append density overlay rings based on score profiles
     heatmapLayer = true;
-
-    sampleVillages.forEach((village) => {
-      const intensity = Math.random() * 0.5 + 0.5;
-      const size = Math.round(60 * intensity);
-
+    sampleVillages.forEach(village => {
       const el = document.createElement('div');
+      const intensity = village.heritageScore ? (100 - village.heritageScore) / 100 : 0.5;
+      const size = Math.max(30, Math.min(100, intensity * 120));
+      
       el.style.cssText = `
-                width:${size}px; height:${size}px;
-                border-radius:50%;
-                background:rgba(244,162,97,${0.35 * intensity});
-                border:1px solid rgba(244,162,97,0.6);
-                pointer-events:none;
-            `;
+        width:${size}px; height:${size}px;
+        border-radius:50%;
+        background:rgba(244,162,97,${0.35 * intensity});
+        border:1px solid rgba(244,162,97,0.6);
+        pointer-events:none;
+      `;
 
       const hm = new maplibregl.Marker({ element: el, anchor: 'center' })
         .setLngLat([village.coordinates[1], village.coordinates[0]])
@@ -725,7 +752,7 @@ function toggleHeatmap() {
       heatmapMarkers.push(hm);
     });
 
-    document.getElementById('toggle-heatmap').textContent = t.hideHeatmap;
+    document.getElementById('toggle-heatmap').textContent = t.hideHeatmap || 'Hide Heatmap';
   }
 }
 
