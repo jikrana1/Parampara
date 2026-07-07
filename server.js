@@ -394,7 +394,14 @@ app.get('/api/recommendations/health', async (req, res) => {
 // Add language learning routes
 const languageLearningRoutes = require('./routes/languageLearning.routes');
 app.use('/api/language', languageLearningRoutes);
+// Add itinerary planner routes
+const itineraryRoutes = require('./routes/itineraryPlanner.routes');
+app.use('/api/itinerary', itineraryRoutes);
 
+// Itinerary Planner page
+app.get('/itinerary-planner', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'itinerary-planner.html'));
+});
 // Language Learning page
 app.get('/language-learning', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'language-learning.html'));
