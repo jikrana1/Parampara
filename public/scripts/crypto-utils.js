@@ -120,6 +120,47 @@ const CryptoUtils = {
     const decoder = new TextDecoder();
     return decoder.decode(decryptedContent);
   }
+  // Normalize an object to ensure deterministic hashing
+  normalizeObject: (obj) => {
+    if (obj === null || typeof obj !== 'object') {
+      if (typeof obj === 'string') return obj.trim();
+      return obj;
+    }
+    if (obj instanceof Date) {
+      return obj.toISOString();
+    }
+    if (Array.isArray(obj)) {
+      return obj.map(CryptoUtils.normalizeObject);
+    }
+    const sortedKeys = Object.keys(obj).sort();
+    const result = {};
+    for (const key of sortedKeys) {
+      if (key !== 'hash' && key !== '_verified') {
+        result[key] = CryptoUtils.normalizeObject(obj[key]);
+      }
+    }
+    return result;
+  },
+
+  // Generate a SHA-256 hash for an object
+  hashObject: async (obj) => {
+    const normalized = CryptoUtils.normalizeObject(obj);
+    const jsonStr = JSON.stringify(normalized) || '';
+    const encoder = new TextEncoder();
+    const data = encoder.encode(jsonStr);
+    
+    const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+  },
+
+  // Verify if the object's computed hash matches its expected hash
+  verifyHash: async (obj, expectedHash) => {
+    if (!expectedHash) return false;
+    const computedHash = await CryptoUtils.hashObject(obj);
+    return computedHash === expectedHash;
+  }
 };
 
 window.CryptoUtils = CryptoUtils;

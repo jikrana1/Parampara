@@ -487,20 +487,37 @@ const GalleryItemComponent = ({ item }) => {
     tagsNode = h('div', { class: 'gallery-item-tags' }, ...tagElements);
   }
 
-  const descHtml = renderMarkdown(item.description.substring(0, 100) + (item.description.length > 100 ? '...' : ''), true);
+    let badgeProps = { style: 'display:inline-flex; align-items:center; font-size: 0.75rem; padding: 2px 6px; border-radius: 12px; margin-left: 8px; vertical-align: middle; font-weight: bold; cursor: help;' };
+    let badgeText = '';
+    if (!item.hash) {
+      badgeProps.style += 'background: #f3f4f6; color: #6b7280;';
+      badgeProps.title = 'This item was created before integrity hashing was enabled.';
+      badgeText = '🛡️ Unverified';
+    } else if (item._verified) {
+      badgeProps.style += 'background: #def7ec; color: #03543f;';
+      badgeProps.title = 'Content integrity verified via SHA-256 hash.';
+      badgeText = '✅ Verified';
+    } else {
+      badgeProps.style += 'background: #fde8e8; color: #9b1c1c;';
+      badgeProps.title = 'Integrity check failed! Content may have been altered.';
+      badgeText = '⚠️ Tampered';
+    }
+    const badgeNode = h('span', badgeProps, badgeText);
 
-  const contentWrapper = h('div', { 
-    class: 'gallery-item-content', 
-    onclick: (e) => { viewItem(item.id); e.stopPropagation(); },
-    style: 'cursor:pointer;'
-  },
-    h('span', { class: 'gallery-item-type' }, translateType(item.type)),
-    h('div', { class: 'gallery-item-location' },
-      h('span', { class: 'gallery-item-location-marker' }, '📍'),
-      h('strong', {}, escapeHtml(item.location))
-    ),
-    h('h3', {}, escapeHtml(item.title)),
-    h('div', { class: 'markdown-body', style: 'font-size:0.9rem; margin-bottom:1rem;', innerHTML: descHtml }),
+    const descHtml = renderMarkdown(item.description.substring(0, 100) + (item.description.length > 100 ? '...' : ''), true);
+
+    const contentWrapper = h('div', { 
+      class: 'gallery-item-content', 
+      onclick: (e) => { viewItem(item.id); e.stopPropagation(); },
+      style: 'cursor:pointer;'
+    },
+      h('span', { class: 'gallery-item-type' }, translateType(item.type)),
+      h('div', { class: 'gallery-item-location' },
+        h('span', { class: 'gallery-item-location-marker' }, '📍'),
+        h('strong', {}, escapeHtml(item.location))
+      ),
+      h('h3', { style: 'display: flex; align-items: center;' }, escapeHtml(item.title), badgeNode),
+      h('div', { class: 'markdown-body', style: 'font-size:0.9rem; margin-bottom:1rem;', innerHTML: descHtml }),
     tagsNode
   );
 

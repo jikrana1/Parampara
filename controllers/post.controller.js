@@ -41,6 +41,13 @@ const createPost = (req, res) => {
     timestamp: new Date().toISOString(),
   };
 
+  const { hashObject } = require('../server/utils/hashUtils');
+  if (req.body.hash) {
+      newPost.hash = req.body.hash;
+  } else {
+      newPost.hash = hashObject(newPost);
+  }
+
   if (typeof store.villagePosts.push === 'function') {
     store.villagePosts.push(newPost);
   }
