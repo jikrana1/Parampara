@@ -407,6 +407,14 @@ app.use('/api/analytics', analyticsDashboardRoutes);
 app.get('/analytics-dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'analytics-dashboard.html'));
 });
+// Add storytelling routes
+const storytellingRoutes = require('./routes/storytelling.routes');
+app.use('/api/story', storytellingRoutes);
+
+// Storytelling page
+app.get('/storytelling', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'storytelling.html'));
+});
 // Add language learning routes
 const languageLearningRoutes = require('./routes/languageLearning.routes');
 app.use('/api/language', languageLearningRoutes);
