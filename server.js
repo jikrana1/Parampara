@@ -15,6 +15,11 @@ const progressRoutes = require('./routes/progress.routes');
 const postRoutes = require('./routes/post.routes');
 const chatRoutes = require('./routes/chat.routes');
 const checkinRoutes = require('./routes/checkin.routes');
+const languageRoutes = require('./routes/language.routes');
+const recipeRoutes = require('./routes/recipe.routes');
+const natureRoutes = require('./routes/nature.routes');
+const initializeSampleLanguageData = require('./config/sampleLanguageData');
+const initializeSampleNatureData = require('./config/sampleNatureData');
 const artisanRoutes = require('./routes/artisan.routes');
 const storyRoutes = require('./routes/story.routes');
 const auditRoutes = require('./routes/audit.routes');
@@ -28,7 +33,6 @@ const integrityRoutes = require('./routes/integrity.routes');
 const authRoutes = require('./routes/auth.routes');
 const userRoutes = require('./routes/user.routes');
 const { csrfProtection } = require('./middleware/csrf');
-
 const store = require('./data/store');
 
 const notFound = require('./middleware/notFound');
@@ -59,6 +63,7 @@ app.use(
           'blob:',
           'https://unpkg.com',
           'https://api.maptiler.com',
+          'https://*.tile.openstreetmap.org',
           'https://cdn.sanity.io',
           'https://encrypted-tbn0.gstatic.com',
           'https://cdn.shopify.com',
@@ -107,6 +112,21 @@ app.use(globalLimiter.middleware());
 
 // Initialize Data
 initializeSampleData();
+initializeSampleLanguageData();
+const initializeSampleRecipeData = require('./config/sampleRecipeData');
+initializeSampleRecipeData();
+initializeSampleNatureData();
+
+// API Routes (existing)
+app.use('/api/items', itemRoutes);
+app.use('/api/paths', pathRoutes);
+app.use('/api/progress', progressRoutes);
+app.use('/api/posts', postRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/checkin', checkinRoutes);
+app.use('/api/language', languageRoutes);
+app.use('/api/recipes', recipeRoutes);
+app.use('/api/nature', natureRoutes);
 
 // Start Background Integrity Scanner
 const integrityService = require('./services/integrityService');
@@ -215,6 +235,13 @@ app.get('/recommendations', (req, res) => {
 // ==================== API ROUTES ====================
 
 const translationsData = require('./data/translationsData');
+
+app.get('/api/language/config', (req, res) => {
+  res.json({
+    default: 'en',
+    supported: ['en', 'hi', 'mr'],
+  });
+});
 
 app.get('/api/language', (req, res) => {
   res.json({
@@ -385,7 +412,12 @@ app.get('/api/map-style', async (req, res) => {
       sources: {
         osm: {
           type: 'raster',
-          tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+          tiles: [
+            'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+          ],
           tileSize: 256,
           attribution: '&copy; OpenStreetMap Contributors',
         },
