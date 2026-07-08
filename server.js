@@ -20,7 +20,9 @@ const recipeRoutes = require('./routes/recipe.routes');
 const natureRoutes = require('./routes/nature.routes');
 const initializeSampleLanguageData = require('./config/sampleLanguageData');
 const initializeSampleNatureData = require('./config/sampleNatureData');
+const initializeSampleArtifactData = require('./config/sampleArtifactData');
 const artisanRoutes = require('./routes/artisan.routes');
+const artifactRoutes = require('./routes/artifact.routes');
 const storyRoutes = require('./routes/story.routes');
 const auditRoutes = require('./routes/audit.routes');
 const csrfRoutes = require('./routes/csrf.routes');
@@ -116,6 +118,7 @@ initializeSampleLanguageData();
 const initializeSampleRecipeData = require('./config/sampleRecipeData');
 initializeSampleRecipeData();
 initializeSampleNatureData();
+initializeSampleArtifactData();
 
 // API Routes (existing)
 app.use('/api/items', itemRoutes);
@@ -290,6 +293,7 @@ app.use('/api/themes', themeRoutes);
 
 app.use('/api/story-generator', storyRoutes);
 app.use('/api/artisans', artisanRoutes);
+app.use('/api/artifacts', artifactRoutes);
 app.use('/api/audit', auditRoutes);
 app.use('/api/cache', cacheRoutes);
 app.use('/api/analytics', analyticsRoutes);
