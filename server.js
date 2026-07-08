@@ -415,6 +415,9 @@ app.use('/api/tours', virtualTourRoutes);
 app.get('/virtual-tour', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'virtual-tour.html'));
 });
+// Add mobile app routes
+const mobileAppRoutes = require('./routes/mobileApp.routes');
+app.use('/api/mobile', mobileAppRoutes);
 // Add storytelling routes
 const storytellingRoutes = require('./routes/storytelling.routes');
 app.use('/api/story', storytellingRoutes);
