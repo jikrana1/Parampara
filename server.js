@@ -407,6 +407,14 @@ app.use('/api/analytics', analyticsDashboardRoutes);
 app.get('/analytics-dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'analytics-dashboard.html'));
 });
+// Add virtual tour routes
+const virtualTourRoutes = require('./routes/virtualTour.routes');
+app.use('/api/tours', virtualTourRoutes);
+
+// Virtual Tour page
+app.get('/virtual-tour', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'virtual-tour.html'));
+});
 // Add storytelling routes
 const storytellingRoutes = require('./routes/storytelling.routes');
 app.use('/api/story', storytellingRoutes);
