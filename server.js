@@ -15,6 +15,11 @@ const chatRoutes = require('./routes/chat.routes');
 const checkinRoutes = require('./routes/checkin.routes');
 const languageRoutes = require('./routes/language.routes');
 const recipeRoutes = require('./routes/recipe.routes');
+const natureRoutes = require('./routes/nature.routes');
+
+const initializeSampleLanguageData = require('./config/sampleLanguageData');
+const initializeSampleNatureData = require('./config/sampleNatureData');
+
 
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
@@ -37,6 +42,7 @@ app.use(
           'blob:',
           'https://unpkg.com',
           'https://api.maptiler.com',
+          'https://*.tile.openstreetmap.org',
           'https://cdn.sanity.io',
           'https://encrypted-tbn0.gstatic.com',
           'https://cdn.shopify.com',
@@ -64,8 +70,11 @@ app.use(
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Initialize Data
+initializeSampleData();
+initializeSampleLanguageData();
 const initializeSampleRecipeData = require('./config/sampleRecipeData');
 initializeSampleRecipeData();
+initializeSampleNatureData();
 
 // API Routes (existing)
 app.use('/api/items', itemRoutes);
@@ -76,6 +85,8 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/checkin', checkinRoutes);
 app.use('/api/language', languageRoutes);
 app.use('/api/recipes', recipeRoutes);
+app.use('/api/nature', natureRoutes);
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -85,27 +96,32 @@ app.get('/api/language/config', (req, res) => {
     supported: ['en', 'hi', 'mr'],
   });
 });
-
-// API Routes
-app.use('/api/items', itemRoutes);
-
-app.use('/api/paths', pathRoutes);
-
-app.use('/api/progress', progressRoutes);
-
-app.use('/api/posts', postRoutes);
-
-app.use('/api/chat', chatRoutes);
-
-app.use('/api/checkin', checkinRoutes);
-
-app.use('/api/language', languageRoutes);
 app.get('/api/map-style', async (req, res) => {
   if (!process.env.MAPTILER_KEY) {
-    return res.status(503).json({
-      configured: false,
-      message:
-        'Map tiles require a MapTiler API key. Please add MAPTILER_KEY to your .env file.',
+    // Fall back to keyless OpenStreetMap raster tiles
+    return res.json({
+      version: 8,
+      sources: {
+        'osm-raster-tiles': {
+          type: 'raster',
+          tiles: [
+            'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
+          ],
+          tileSize: 256,
+          attribution: '© OpenStreetMap contributors'
+        }
+      },
+      layers: [
+        {
+          id: 'osm-raster-layer',
+          type: 'raster',
+          source: 'osm-raster-tiles',
+          minzoom: 0,
+          maxzoom: 19
+        }
+      ]
     });
   }
 

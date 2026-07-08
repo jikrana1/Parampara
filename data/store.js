@@ -5,6 +5,7 @@ const store = {
   villagePosts: [],
   heritageLanguages: [], // new collection for language words
   recipes: [], // new collection for traditional recipes
+  naturalHeritageSites: [], // collection for sacred natural heritage
 };
 
 module.exports = store;
