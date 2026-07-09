@@ -564,12 +564,12 @@ app.get('/api/recommendations/health', async (req, res) => {
 // app.get('/analytics-dashboard', (req, res) => {
 //   res.sendFile(path.join(__dirname, 'public', 'analytics-dashboard.html'));
 // });
-// Virtual Tour routes (disabled - service missing)
-// const virtualTourRoutes = require('./routes/virtualTour.routes');
-// app.use('/api/tours', virtualTourRoutes);
-// app.get('/virtual-tour', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'public', 'virtual-tour.html'));
-// });
+// Virtual Tour routes
+const virtualTourRoutes = require('./routes/virtualTour.routes');
+app.use('/api/tours', virtualTourRoutes);
+app.get('/virtual-tour', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'virtual-tour.html'));
+});
 // Storytelling routes (disabled - service missing)
 // const storytellingRoutes = require('./routes/storytelling.routes');
 // app.use('/api/story', storytellingRoutes);
