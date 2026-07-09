@@ -62,6 +62,20 @@ try {
     let northAmSearch = tree.search(new BoundingBox(10, -130, 60, -60));
     assert(northAmSearch.length === 0, 'Disjoint negative coordinate search returns empty');
 
+    // Test 8: Infinite Recursion Prevention (Identical Coordinates)
+    tree.clear();
+    let overflowPrevented = true;
+    try {
+        for (let i = 0; i < 2000; i++) {
+            tree.insert({ id: `dup${i}`, coordinates: [10, 10] });
+        }
+    } catch (e) {
+        overflowPrevented = false;
+    }
+    assert(overflowPrevented, 'Prevents stack overflow on mass identical coordinate insertions');
+    let duplicateSearch = tree.search(new BoundingBox(5, 5, 15, 15));
+    assert(duplicateSearch.length === 2000, 'All identical coordinates successfully stored and retrieved via maxDepth bypass');
+
 } catch (err) {
     console.error('Test script crashed:', err);
     failCount++;
