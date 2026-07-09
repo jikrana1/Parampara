@@ -15,6 +15,8 @@ const progressRoutes = require('./routes/progress.routes');
 const postRoutes = require('./routes/post.routes');
 const chatRoutes = require('./routes/chat.routes');
 const checkinRoutes = require('./routes/checkin.routes');
+const profileRoutes = require('./routes/profile.routes');
+const gamificationRoutes = require('./routes/gamification.routes');
 const languageRoutes = require('./routes/language.routes');
 const recipeRoutes = require('./routes/recipe.routes');
 const natureRoutes = require('./routes/nature.routes');
@@ -184,6 +186,11 @@ app.get('/quest', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'quest.html'));
 });
 
+// Profile Route
+app.get('/profile', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'profile.html'));
+});
+
 // Trails Route
 app.get('/trails', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'trails.html'));
@@ -280,6 +287,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/items', itemRoutes);
 app.use('/api/gallery', galleryRoutes);
+app.use('/api/profile', profileRoutes);
+app.use('/api/gamification', gamificationRoutes);
 
 const tenantRoutes = require('./routes/tenant.routes');
 app.use('/api/tenant', tenantRoutes);
