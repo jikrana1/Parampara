@@ -402,7 +402,14 @@ app.get('/blockchain', (req, res) => {
 // Add analytics dashboard routes
 const analyticsDashboardRoutes = require('./routes/analyticsDashboard.routes');
 app.use('/api/analytics', analyticsDashboardRoutes);
+// Add cultural exchange routes
+const culturalExchangeRoutes = require('./routes/culturalExchange.routes');
+app.use('/api/exchange', culturalExchangeRoutes);
 
+// Cultural Exchange page
+app.get('/cultural-exchange', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'cultural-exchange.html'));
+});
 // Analytics Dashboard page
 app.get('/analytics-dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'analytics-dashboard.html'));
