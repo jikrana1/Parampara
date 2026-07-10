@@ -399,6 +399,14 @@ app.use('/api/blockchain', blockchainRoutes);
 app.get('/blockchain', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blockchain.html'));
 });
+// Add impact metrics routes
+const impactMetricsRoutes = require('./routes/impactMetrics.routes');
+app.use('/api/impact', impactMetricsRoutes);
+
+// Impact Metrics page
+app.get('/impact-metrics', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'impact-metrics.html'));
+});
 // Add analytics dashboard routes
 const analyticsDashboardRoutes = require('./routes/analyticsDashboard.routes');
 app.use('/api/analytics', analyticsDashboardRoutes);
