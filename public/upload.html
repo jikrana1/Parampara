@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Upload | Parampara</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/upload.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+    <script src="/scripts/tenant-interceptor.js"></script>`n      <script src="/scripts/tenant-switcher.js" defer></script>`n  </head>
+<body>
+  <nav class="navbar navbar-home">
+    <div class="nav-container">
+      <div class="logo">
+        <h1>Parampara</h1>
+        <p class="tagline">Cultural Video Archive</p>
+      </div>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html"><i class="ti ti-home"></i> Home</a></li>
+        <li><a href="gallery.html"><i class="ti ti-photo"></i> Gallery</a></li>
+        <li><a href="archives.html"><i class="ti ti-vault"></i> Archives</a></li>
+        <li><a href="upload.html" class="active"><i class="ti ti-upload"></i> Upload</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="upload-main">
+    <!-- Hero -->
+    <section class="upload-hero">
+      <h1><i class="ti ti-video-plus"></i> Resumable Video Upload</h1>
+      <p>Upload large cultural videos reliably over any network. Interrupted? We'll pick up right where you left off.</p>
+    </section>
+
+    <div class="upload-container">
+
+      <!-- Left: Upload Panel -->
+      <section class="upload-panel">
+
+        <!-- Network Status -->
+        <div class="network-bar" id="network-bar">
+          <span class="net-dot online" id="net-dot"></span>
+          <span id="net-status-text">Online</span>
+        </div>
+
+        <!-- Drop Zone -->
+        <div class="drop-zone" id="drop-zone">
+          <i class="ti ti-cloud-upload drop-icon"></i>
+          <p class="drop-title">Drag & drop your video here</p>
+          <p class="drop-hint">MP4, WebM, MOV, MKV — any size</p>
+          <label class="btn btn-primary browse-btn">
+            <i class="ti ti-folder-open"></i> Browse Files
+            <input type="file" id="file-input" accept="video/*" hidden />
+          </label>
+        </div>
+
+        <!-- File Info -->
+        <div class="file-info-card hidden" id="file-info-card">
+          <div class="fi-icon"><i class="ti ti-file-video"></i></div>
+          <div class="fi-details">
+            <strong id="fi-name">—</strong>
+            <span id="fi-size">—</span>
+            <span id="fi-type">—</span>
+          </div>
+          <button class="fi-clear" id="clear-btn" title="Clear"><i class="ti ti-x"></i></button>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section hidden" id="progress-section">
+          <div class="progress-header">
+            <span id="progress-label">Uploading...</span>
+            <span id="progress-pct">0%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-bar"></div>
+          </div>
+          <div class="chunk-info" id="chunk-info">Chunk 0 of 0</div>
+
+          <!-- Chunk Grid -->
+          <div class="chunk-grid" id="chunk-grid"></div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-btns">
+          <button class="btn btn-primary" id="start-btn" disabled>
+            <i class="ti ti-upload"></i> Start Upload
+          </button>
+          <button class="btn btn-pause hidden" id="pause-btn">
+            <i class="ti ti-player-pause"></i> Pause
+          </button>
+          <button class="btn btn-resume hidden" id="resume-btn">
+            <i class="ti ti-player-play"></i> Resume
+          </button>
+          <button class="btn btn-cancel hidden" id="cancel-btn">
+            <i class="ti ti-ban"></i> Cancel
+          </button>
+        </div>
+
+        <!-- Resume Banner (shown on page reload if session exists) -->
+        <div class="resume-banner hidden" id="resume-banner">
+          <i class="ti ti-refresh"></i>
+          <div>
+            <strong>Interrupted upload detected!</strong>
+            <span id="resume-info">Resume from chunk <b id="resume-chunk">?</b></span>
+          </div>
+          <button class="btn btn-primary" id="resume-session-btn">Resume</button>
+          <button class="btn btn-cancel" id="discard-session-btn">Discard</button>
+        </div>
+      </section>
+
+      <!-- Right: Upload History & Status -->
+      <aside class="upload-sidebar">
+        <div class="sidebar-card">
+          <h2><i class="ti ti-list"></i> Upload History</h2>
+          <ul id="history-list" class="history-list">
+            <li class="empty-hint">No uploads yet this session.</li>
+          </ul>
+        </div>
+
+        <div class="sidebar-card">
+          <h2><i class="ti ti-info-circle"></i> How It Works</h2>
+          <ol class="how-list">
+            <li>File is split into <strong>2MB chunks</strong></li>
+            <li>Chunks upload one-by-one</li>
+            <li>If interrupted, reload the page — it resumes automatically</li>
+            <li>All chunks received → file is assembled on the server</li>
+          </ol>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 Parampara. Preserving rural heritage, one story at a time.</p>
+    </div>
+  </footer>
+
+  <script src="scripts/theme.js"></script>
+  <script src="scripts/upload.js"></script>
+  <script src="scripts/crypto-utils.js"></script>
+  <script src="scripts/integrityBadge.js"></script>
+</body>
+</html>

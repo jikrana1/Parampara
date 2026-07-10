@@ -1,5 +1,41 @@
 <!doctype html>
 <html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Heritage Timeline – Parampara</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/timeline.css" />
+  <script src="/scripts/tenant-interceptor.js"></script>`n
+  <script src="/scripts/tenant-switcher.js" defer></script>`n
+</head>
+
+<body>
+  <!-- Navigation (shared) -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <h1 data-i18n="brand_name">Parampara</h1>
+        <p class="tagline" data-i18n="brand_tagline">Preserving Living Traditions</p>
+      </div>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation">
+        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+      </button>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html"><i class="ti ti-home"></i> Home</a></li>
+        <li><a href="map.html"><i class="ti ti-map-2"></i> Explore Map</a></li>
+        <li><a href="gallery.html"><i class="ti ti-photo"></i> Gallery</a></li>
+        <li><a href="paths.html"><i class="ti ti-route"></i> Heritage Paths</a></li>
+        <li><a href="quest.html"><i class="ti ti-compass"></i> Discovery Quest</a></li>
+        <li><a href="trails.html"><i class="ti ti-trail-sign"></i> Heritage Trails</a></li>
+        <li><a href="nature.html"><i class="ti ti-leaf"></i> Sacred Heritage</a></li>
+        <li><a href="timeline.html">Timeline</a></li>
+        <li><a href="chat.html"><i class="ti ti-message-circle"></i> Talk to Elder</a></li>
+      </ul>
+    </div>
+  </nav>
+
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,6 +43,7 @@
     <link rel="stylesheet" href="styles/main.css" />
     <link rel="stylesheet" href="styles/timeline.css" />
   </head>
+
   <body>
     <!-- Navigation (shared) -->
     <nav class="navbar">
@@ -17,13 +54,8 @@
             Preserving Living Traditions
           </p>
         </div>
-        <button
-          class="hamburger"
-          id="hamburgerBtn"
-          aria-label="Toggle navigation"
-        >
-          <span class="bar"></span><span class="bar"></span
-          ><span class="bar"></span>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation">
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
         </button>
         <ul class="nav-menu" id="navMenu">
           <li>
@@ -39,26 +71,18 @@
             <a href="paths.html"><i class="ti ti-route"></i> Heritage Paths</a>
           </li>
           <li>
-            <a href="quest.html"
-              ><i class="ti ti-compass"></i> Discovery Quest</a
-            >
+            <a href="quest.html"><i class="ti ti-compass"></i> Discovery Quest</a>
           </li>
           <li>
-            <a href="trails.html"
-              ><i class="ti ti-trail-sign"></i> Heritage Trails</a
-            >
+            <a href="trails.html"><i class="ti ti-trail-sign"></i> Heritage Trails</a>
           </li>
           <li><a href="timeline.html">Timeline</a></li>
           <li>
-            <a href="chat.html"
-              ><i class="ti ti-message-circle"></i> Talk to Elder</a
-            >
+            <a href="chat.html"><i class="ti ti-message-circle"></i> Talk to Elder</a>
           </li>
           <li>
-            <a href="calendar.html"
-              ><i class="ti ti-calendar"></i>
-              <span data-i18n="nav_calendar">Seasonal Calendar</span></a
-            >
+            <a href="calendar.html"><i class="ti ti-calendar"></i>
+              <span data-i18n="nav_calendar">Seasonal Calendar</span></a>
           </li>
         </ul>
       </div>
@@ -66,12 +90,7 @@
 
     <main class="timeline-page">
       <section class="timeline-controls">
-        <input
-          type="text"
-          id="timeline-search"
-          placeholder="Search milestones..."
-          aria-label="Search timeline"
-        />
+        <input type="text" id="timeline-search" placeholder="Search milestones..." aria-label="Search timeline" />
         <select id="category-filter" aria-label="Filter by category">
           <option value="all">All Categories</option>
           <option value="Craft">Craft</option>
@@ -93,11 +112,7 @@
         <div class="progress-bar"></div>
       </section>
 
-      <section
-        class="timeline-container"
-        role="list"
-        aria-label="Heritage timeline"
-      >
+      <section class="timeline-container" role="list" aria-label="Heritage timeline">
         <!-- Cards will be injected here -->
       </section>
     </main>
@@ -112,9 +127,17 @@
 
     <button id="backToTopBtn" aria-label="Back to top">↑</button>
 
+    <script src="scripts/crypto-utils.js"></script>
+    <script src="scripts/integrityBadge.js"></script>
     <script src="scripts/main.js"></script>
     <script src="scripts/translations.js"></script>
     <script src="scripts/languageSwitcher.js"></script>
     <script src="scripts/timeline.js"></script>
   </body>
+  <script src="scripts/main.js"></script>
+  <script src="scripts/translations.js"></script>
+  <script src="scripts/languageSwitcher.js"></script>
+  <script src="scripts/timeline.js"></script>
+</body>
+
 </html>

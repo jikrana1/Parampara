@@ -14,12 +14,29 @@
   <body>
     <!-- Navigation (same as site-wide nav) -->
     <nav class="navbar">
-      <div class="nav-container">
-        <div class="logo">
-          <h1 data-i18n="brand_name">Parampara</h1>
-          <p class="tagline" data-i18n="brand_tagline">
-            Preserving Living Traditions
-          </p>
+<div class="nav-container">
+            <div class="logo">
+                <h1 data-i18n="brand_name">Parampara</h1>
+                <p class="tagline" data-i18n="brand_tagline">Preserving Living Traditions</p>
+            </div>
+            <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation">
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html"><i class="ti ti-home"></i> Home</a></li>
+                <li><a href="map.html"><i class="ti ti-map-2"></i> Explore Map</a></li>
+                <li><a href="gallery.html"><i class="ti ti-photo"></i> Gallery</a></li>
+                <li><a href="paths.html"><i class="ti ti-route"></i> Heritage Paths</a></li>
+                <li><a href="quest.html"><i class="ti ti-compass"></i> Discovery Quest</a></li>
+                <li><a href="trails.html"><i class="ti ti-trail-sign"></i> Heritage Trails</a></li>
+                <li><a href="nature.html"><i class="ti ti-leaf"></i> Sacred Heritage</a></li>
+                <li><a href="timeline.html">Timeline</a></li>
+                <li><a href="chat.html"><i class="ti ti-message-circle"></i> Talk to Elder</a></li>
+                <li><a href="calendar.html"><i class="ti ti-calendar"></i> <span data-i18n="nav_calendar">Seasonal Calendar</span></a></li>
+                <li><a href="challenges.html"><i class="ti ti-flag"></i> Challenges</a></li>
+                <li><a href="language.html" class="active"><i class="ti ti-language"></i> Languages</a></li>
+            </ul>
+        </div>
         </div>
         <button
           class="hamburger"
@@ -197,7 +214,7 @@
 
     <script src="scripts/language.js"></script>
     <script src="scripts/main.js"></script>
-    <script src="scripts/translations.js"></script>
+    <script src="scripts/translationsData.js"></script>
     <script src="scripts/languageSwitcher.js"></script>
   </body>
 </html>
