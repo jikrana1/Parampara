@@ -581,12 +581,12 @@ app.get('/virtual-tour', (req, res) => {
 // const languageLearningRoutes = require('./routes/languageLearning.routes');
 // app.use('/api/language', languageLearningRoutes);
 
-// Itinerary Planner routes (disabled - service missing)
-// const itineraryRoutes = require('./routes/itineraryPlanner.routes');
-// app.use('/api/itinerary', itineraryRoutes);
-// app.get('/itinerary-planner', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'public', 'itinerary-planner.html'));
-// });
+// Itinerary Planner routes
+const itineraryRoutes = require('./routes/itineraryPlanner.routes');
+app.use('/api/itinerary', itineraryRoutes);
+app.get('/itinerary-planner', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'itinerary-planner.html'));
+});
 // Language Learning page
 app.get('/language-learning', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'language-learning.html'));
