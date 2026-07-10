@@ -599,6 +599,13 @@ app.get('/language-learning', (req, res) => {
 app.get('/ar-experience', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'ar-experience.html'));
 });
+
+// Rangoli Generator routes
+const rangoliRoutes = require('./routes/rangoli.routes');
+app.use('/api/rangoli', rangoliRoutes);
+app.get('/rangoli-generator', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'rangoli.html'));
+});
 // Add search engine routes
 const searchEngineRoutes = require('./routes/searchEngine');
 app.use('/api/search', searchEngineRoutes);
