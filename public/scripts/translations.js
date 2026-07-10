@@ -66,7 +66,8 @@ const translations = {
       'Gond tribal musicians contributed 50 rare folk songs to the archive, many never recorded before.',
     post6_type: 'Music',
     language_hero_title: 'Preserve Rural Languages',
-    language_hero_subtitle: 'Discover, hear, and cherish words from villages across the country.',
+    language_hero_subtitle:
+      'Discover, hear, and cherish words from villages across the country.',
     hero_btn_word: 'Word of the Day',
     hero_btn_explore: 'Explore Vocabulary',
     word_of_the_day_title: 'Word of the Day',
@@ -75,7 +76,8 @@ const translations = {
     dialect_compare_title: 'Dialect Comparison',
     compare_btn: 'Compare',
     favorites_title: 'My Favorites',
-    footer_copy: '© 2024 Parampara. Preserving rural heritage, one story at a time.',
+    footer_copy:
+      '© 2024 Parampara. Preserving rural heritage, one story at a time.',
   },
 
   hi: {
@@ -88,7 +90,7 @@ const translations = {
     vocab_title: 'शब्दावली',
     dialect_compare_title: 'भाषा तुलना',
     compare_btn: 'तुलना करें',
-    favorites_title: 'मेरी पसंदीदा'
+    favorites_title: 'मेरी पसंदीदा',
 
     mapTitle: 'डिजिटल समय यात्रा: ग्रामीण विरासत का अन्वेषण करें',
 
@@ -165,7 +167,6 @@ const translations = {
     compare_btn: 'तुलना करा',
     favorites_title: 'माझी आवडते',
     mapTitle: 'डिजिटल टाइम ट्रॅव्हल: ग्रामीण वारसा शोधा',
-
 
     mapDescription:
       'गावांवर क्लिक करून त्यांच्या परंपरा, सण आणि हस्तकला जाणून घ्या',
@@ -248,6 +249,7 @@ const PARAMPARA_TRANSLATIONS = {
     nav_quest: 'Discovery Quest',
     nav_trails: 'Heritage Trails',
     nav_chat: 'Talk to Elder',
+    nav_calendar: 'Seasonal Calendar',
     footer_copy:
       '© 2024 Parampara. Preserving rural heritage, one story at a time.',
     hero_title: 'Preserving the Stories That Matter',
@@ -484,6 +486,18 @@ const PARAMPARA_TRANSLATIONS = {
     chat_q3_question: 'Tell me about rural festivals',
     chat_q4_label: 'Traditional Crafts',
     chat_q4_question: 'What are some traditional crafts?',
+    calendar_title: 'Seasonal Cultural Calendar',
+    calendar_subtitle:
+      'Discover village traditions, festivals, and harvests throughout the year',
+    filter_type: 'Event Type',
+    filter_month: 'Month',
+    filter_season: 'Season',
+    filter_state: 'State',
+    sort_by: 'Sort By',
+    view_monthly: 'Monthly Grid',
+    view_seasonal: 'Seasonal Decks',
+    view_timeline: 'Timeline List',
+    view_region: 'Region Clusters',
   },
 
   hi: {
@@ -496,6 +510,7 @@ const PARAMPARA_TRANSLATIONS = {
     nav_quest: 'खोज अभियान',
     nav_trails: 'विरासत ट्रेल्स',
     nav_chat: 'बुजुर्ग से बात करें',
+    nav_calendar: 'मौसमी कैलेंडर',
     footer_copy: '© 2024 परंपरा। एक कहानी की कीमत पर ग्रामीण विरासत को संजोना।',
     hero_title: 'उन कहानियों को संजोना जो मायने रखती हैं',
     hero_subtitle:
@@ -731,6 +746,18 @@ const PARAMPARA_TRANSLATIONS = {
     chat_q3_question: 'मुझे ग्रामीण त्योहारों के बारे में बताएं',
     chat_q4_label: 'पारंपरिक शिल्प',
     chat_q4_question: 'कुछ पारंपरिक शिल्प कौन से हैं?',
+    calendar_title: 'मौसमी सांस्कृतिक कैलेंडर',
+    calendar_subtitle:
+      'वर्ष भर गाँव की परंपराओं, त्योहारों और फसलों का अन्वेषण करें',
+    filter_type: 'कार्यक्रम का प्रकार',
+    filter_month: 'महीना',
+    filter_season: 'मौसम',
+    filter_state: 'राज्य',
+    sort_by: 'क्रमबद्ध करें',
+    view_monthly: 'मासिक ग्रिड',
+    view_seasonal: 'मौसमी डेक',
+    view_timeline: 'समय-सीमा सूची',
+    view_region: 'क्षेत्र समूह',
   },
 
   mr: {
@@ -743,6 +770,7 @@ const PARAMPARA_TRANSLATIONS = {
     nav_quest: 'शोध मोहीम',
     nav_trails: 'वारसा ट्रेल्स',
     nav_chat: 'वडिलांशी बोला',
+    nav_calendar: 'हंगामी कॅलेंडर',
     footer_copy: '© 2024 परंपरा। एका कथेच्या किमतीत ग्रामीण वारसा जपणे।',
     hero_title: 'महत्त्वाच्या गोष्टी जपणे',
     hero_subtitle:
@@ -976,5 +1004,16 @@ const PARAMPARA_TRANSLATIONS = {
     chat_q3_question: 'मला ग्रामीण सणांबद्दल सांगा',
     chat_q4_label: 'पारंपरिक हस्तकला',
     chat_q4_question: 'काही पारंपरिक हस्तकला कोणत्या आहेत?',
+    calendar_title: 'हंगामी सांस्कृतिक कॅलेंडर',
+    calendar_subtitle: 'वर्षभरातील गावातील परंपरा, सण आणि पिकांचा शोध घ्या',
+    filter_type: 'कार्यक्रमाचा प्रकार',
+    filter_month: 'महिना',
+    filter_season: 'ऋतू',
+    filter_state: 'राज्य',
+    sort_by: 'क्रमवारी लावा',
+    view_monthly: 'मासिक ग्रिड',
+    view_seasonal: 'हंगामी डेक',
+    view_timeline: 'टाइमलाइन सूची',
+    view_region: 'प्रदेश समूह',
   },
 };

@@ -15,11 +15,10 @@ const chatRoutes = require('./routes/chat.routes');
 const checkinRoutes = require('./routes/checkin.routes');
 const languageRoutes = require('./routes/language.routes');
 const recipeRoutes = require('./routes/recipe.routes');
+const calendarRoutes = require('./routes/calendar.routes');
 
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
-
-const initializeSampleData = require('./config/sampleData');
 
 const PORT = process.env.PORT || 3000;
 
@@ -64,8 +63,14 @@ app.use(
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Initialize Data
+const initializeSampleData = require('./config/sampleData');
+initializeSampleData();
+
 const initializeSampleRecipeData = require('./config/sampleRecipeData');
 initializeSampleRecipeData();
+
+const initializeSampleCalendarData = require('./config/sampleCalendarData');
+initializeSampleCalendarData();
 
 // API Routes (existing)
 app.use('/api/items', itemRoutes);
@@ -76,6 +81,7 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/checkin', checkinRoutes);
 app.use('/api/language', languageRoutes);
 app.use('/api/recipes', recipeRoutes);
+app.use('/api/calendar', calendarRoutes);
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
