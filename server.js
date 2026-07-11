@@ -394,7 +394,14 @@ app.get('/api/recommendations/health', async (req, res) => {
 // Add blockchain routes
 const blockchainRoutes = require('./routes/blockchain.routes');
 app.use('/api/blockchain', blockchainRoutes);
+// Add preservation AI routes
+const preservationAIRoutes = require('./routes/preservationAI.routes');
+app.use('/api/preservation', preservationAIRoutes);
 
+// Preservation page
+app.get('/preservation', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'preservation.html'));
+});
 // Blockchain page
 app.get('/blockchain', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blockchain.html'));
