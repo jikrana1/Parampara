@@ -1,10 +1,6 @@
-// controllers/progress.controller.js
 const store = require('../data/store');
 const { v4: uuidv4 } = require('uuid');
-
-// ============================================
-// CONSTANTS
-// ============================================
+const logger = require('../utils/logger');
 
 const ALLOWED_PROGRESS_FIELDS = new Set(['badges', 'quests', 'checkIns', 'achievements', 'stats']);
 const MAX_BADGES = 100;
@@ -19,26 +15,13 @@ const MAX_VILLAGE_LENGTH = 200;
 const ALLOWED_QUEST_STATUSES = ['pending', 'active', 'completed', 'failed'];
 const ALLOWED_BADGE_TYPES = ['exploration', 'streak', 'quest', 'special'];
 
-// ============================================
-// VALIDATION FUNCTIONS
-// ============================================
-
-/**
- * Validate userId
- */
 function validateUserId(userId) {
   if (!userId || typeof userId !== 'string' || userId.trim().length === 0) {
-    return {
-      valid: false,
-      error: 'userId is required and must be a non-empty string'
-    };
+    return { valid: false, error: 'userId is required and must be a non-empty string' };
   }
   return { valid: true, value: userId.trim() };
 }
 
-/**
- * Validate badge
- */
 function validateBadge(badge) {
   const errors = [];
 
@@ -58,7 +41,6 @@ function validateBadge(badge) {
     errors.push(`Badge type must be one of: ${ALLOWED_BADGE_TYPES.join(', ')}`);
   }
 
-  // XSS protection
   if (badge.name && /[<>{}]/.test(badge.name)) {
     errors.push('Badge name contains invalid characters');
   }
@@ -66,15 +48,9 @@ function validateBadge(badge) {
     errors.push('Badge description contains invalid characters');
   }
 
-  return {
-    valid: errors.length === 0,
-    errors
-  };
+  return { valid: errors.length === 0, errors };
 }
 
-/**
- * Validate quest
- */
 function validateQuest(quest) {
   const errors = [];
 
@@ -98,7 +74,6 @@ function validateQuest(quest) {
     errors.push('Quest points must be a positive number');
   }
 
-  // XSS protection
   if (quest.title && /[<>{}]/.test(quest.title)) {
     errors.push('Quest title contains invalid characters');
   }
@@ -106,15 +81,9 @@ function validateQuest(quest) {
     errors.push('Quest description contains invalid characters');
   }
 
-  return {
-    valid: errors.length === 0,
-    errors
-  };
+  return { valid: errors.length === 0, errors };
 }
 
-/**
- * Validate check-in
- */
 function validateCheckIn(checkIn) {
   const errors = [];
 
@@ -134,20 +103,13 @@ function validateCheckIn(checkIn) {
     }
   }
 
-  // XSS protection
   if (checkIn.village && /[<>{}]/.test(checkIn.village)) {
     errors.push('Village name contains invalid characters');
   }
 
-  return {
-    valid: errors.length === 0,
-    errors
-  };
+  return { valid: errors.length === 0, errors };
 }
 
-/**
- * Create default progress
- */
 const createDefaultProgress = () => ({
   badges: [],
   quests: [],
@@ -165,9 +127,6 @@ const createDefaultProgress = () => ({
   lastUpdated: new Date().toISOString()
 });
 
-/**
- * Calculate stats
- */
 function calculateStats(progress) {
   const checkIns = progress.checkIns || [];
   const badges = progress.badges || [];
@@ -175,7 +134,6 @@ function calculateStats(progress) {
 
   const uniqueVillages = new Set(checkIns.map(c => c.village));
 
-  // Calculate streak
   let currentStreak = 0;
   let longestStreak = 0;
 
@@ -212,22 +170,11 @@ function calculateStats(progress) {
   };
 }
 
-// ============================================
-// MAIN CONTROLLER FUNCTIONS
-// ============================================
-
-/**
- * GET /api/progress/:userId
- * Get user progress
- */
 const getProgress = (req, res) => {
   try {
     const userIdValidation = validateUserId(req.params.userId);
     if (!userIdValidation.valid) {
-      return res.status(400).json({
-        success: false,
-        error: userIdValidation.error
-      });
+      return res.status(400).json({ success: false, error: userIdValidation.error });
     }
     const userId = userIdValidation.value;
 
@@ -238,35 +185,24 @@ const getProgress = (req, res) => {
     const progress = store.userProgress[userId];
     const stats = calculateStats(progress);
 
+    logger.info(`Progress fetched for user: ${userId}`);
+
     res.json({
       success: true,
-      data: {
-        ...progress,
-        stats
-      }
+      data: { ...progress, stats }
     });
 
   } catch (error) {
-    console.error('[Progress] Get error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error'
-    });
+    logger.error('[Progress] Get error:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
   }
 };
 
-/**
- * PUT /api/progress/:userId
- * Update full progress
- */
 const updateProgress = (req, res) => {
   try {
     const userIdValidation = validateUserId(req.params.userId);
     if (!userIdValidation.valid) {
-      return res.status(400).json({
-        success: false,
-        error: userIdValidation.error
-      });
+      return res.status(400).json({ success: false, error: userIdValidation.error });
     }
     const userId = userIdValidation.value;
 
@@ -280,9 +216,7 @@ const updateProgress = (req, res) => {
     }
 
     const incomingKeys = Object.keys(payload);
-    const unsupportedKeys = incomingKeys.filter(
-      (key) => !ALLOWED_PROGRESS_FIELDS.has(key)
-    );
+    const unsupportedKeys = incomingKeys.filter(key => !ALLOWED_PROGRESS_FIELDS.has(key));
 
     if (unsupportedKeys.length > 0) {
       return res.status(400).json({
@@ -292,7 +226,6 @@ const updateProgress = (req, res) => {
       });
     }
 
-    // Validate each field
     for (const key of incomingKeys) {
       if (!Array.isArray(payload[key])) {
         return res.status(400).json({
@@ -329,7 +262,6 @@ const updateProgress = (req, res) => {
         });
       }
 
-      // Check array limits
       if (key === 'badges' && payload[key].length > MAX_BADGES) {
         return res.status(400).json({
           success: false,
@@ -362,36 +294,25 @@ const updateProgress = (req, res) => {
 
     const stats = calculateStats(store.userProgress[userId]);
 
+    logger.info(`Progress updated for user: ${userId}`);
+
     res.json({
       success: true,
       message: 'Progress updated successfully',
-      data: {
-        ...store.userProgress[userId],
-        stats
-      }
+      data: { ...store.userProgress[userId], stats }
     });
 
   } catch (error) {
-    console.error('[Progress] Update error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error'
-    });
+    logger.error('[Progress] Update error:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
   }
 };
 
-/**
- * POST /api/progress/:userId/badges
- * Add a badge
- */
 const addBadge = (req, res) => {
   try {
     const userIdValidation = validateUserId(req.params.userId);
     if (!userIdValidation.valid) {
-      return res.status(400).json({
-        success: false,
-        error: userIdValidation.error
-      });
+      return res.status(400).json({ success: false, error: userIdValidation.error });
     }
     const userId = userIdValidation.value;
 
@@ -409,10 +330,7 @@ const addBadge = (req, res) => {
       store.userProgress[userId] = createDefaultProgress();
     }
 
-    // Check duplicate
-    const duplicate = store.userProgress[userId].badges.find(
-      b => b.name === badge.name
-    );
+    const duplicate = store.userProgress[userId].badges.find(b => b.name === badge.name);
     if (duplicate) {
       return res.status(409).json({
         success: false,
@@ -421,7 +339,6 @@ const addBadge = (req, res) => {
       });
     }
 
-    // Check limit
     if (store.userProgress[userId].badges.length >= MAX_BADGES) {
       return res.status(400).json({
         success: false,
@@ -440,6 +357,8 @@ const addBadge = (req, res) => {
     store.userProgress[userId].badges.push(newBadge);
     store.userProgress[userId].lastUpdated = new Date().toISOString();
 
+    logger.info(`Badge added for user: ${userId}`);
+
     res.status(201).json({
       success: true,
       message: 'Badge added successfully',
@@ -447,26 +366,16 @@ const addBadge = (req, res) => {
     });
 
   } catch (error) {
-    console.error('[Progress] Add badge error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error'
-    });
+    logger.error('[Progress] Add badge error:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
   }
 };
 
-/**
- * POST /api/progress/:userId/quests
- * Add a quest
- */
 const addQuest = (req, res) => {
   try {
     const userIdValidation = validateUserId(req.params.userId);
     if (!userIdValidation.valid) {
-      return res.status(400).json({
-        success: false,
-        error: userIdValidation.error
-      });
+      return res.status(400).json({ success: false, error: userIdValidation.error });
     }
     const userId = userIdValidation.value;
 
@@ -484,10 +393,7 @@ const addQuest = (req, res) => {
       store.userProgress[userId] = createDefaultProgress();
     }
 
-    // Check duplicate
-    const duplicate = store.userProgress[userId].quests.find(
-      q => q.title === quest.title
-    );
+    const duplicate = store.userProgress[userId].quests.find(q => q.title === quest.title);
     if (duplicate) {
       return res.status(409).json({
         success: false,
@@ -496,7 +402,6 @@ const addQuest = (req, res) => {
       });
     }
 
-    // Check limit
     if (store.userProgress[userId].quests.length >= MAX_QUESTS) {
       return res.status(400).json({
         success: false,
@@ -518,6 +423,8 @@ const addQuest = (req, res) => {
     store.userProgress[userId].quests.push(newQuest);
     store.userProgress[userId].lastUpdated = new Date().toISOString();
 
+    logger.info(`Quest added for user: ${userId}`);
+
     res.status(201).json({
       success: true,
       message: 'Quest added successfully',
@@ -525,26 +432,16 @@ const addQuest = (req, res) => {
     });
 
   } catch (error) {
-    console.error('[Progress] Add quest error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error'
-    });
+    logger.error('[Progress] Add quest error:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
   }
 };
 
-/**
- * POST /api/progress/:userId/checkins
- * Add a check-in
- */
 const addCheckIn = (req, res) => {
   try {
     const userIdValidation = validateUserId(req.params.userId);
     if (!userIdValidation.valid) {
-      return res.status(400).json({
-        success: false,
-        error: userIdValidation.error
-      });
+      return res.status(400).json({ success: false, error: userIdValidation.error });
     }
     const userId = userIdValidation.value;
 
@@ -562,7 +459,6 @@ const addCheckIn = (req, res) => {
       store.userProgress[userId] = createDefaultProgress();
     }
 
-    // Check limit
     if (store.userProgress[userId].checkIns.length >= MAX_CHECKINS) {
       return res.status(400).json({
         success: false,
@@ -580,6 +476,8 @@ const addCheckIn = (req, res) => {
     store.userProgress[userId].checkIns.push(newCheckIn);
     store.userProgress[userId].lastUpdated = new Date().toISOString();
 
+    logger.info(`Check-in added for user: ${userId}`);
+
     res.status(201).json({
       success: true,
       message: 'Check-in added successfully',
@@ -587,26 +485,16 @@ const addCheckIn = (req, res) => {
     });
 
   } catch (error) {
-    console.error('[Progress] Add check-in error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error'
-    });
+    logger.error('[Progress] Add check-in error:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
   }
 };
 
-/**
- * DELETE /api/progress/:userId/badges/:badgeId
- * Remove a badge
- */
 const removeBadge = (req, res) => {
   try {
     const userIdValidation = validateUserId(req.params.userId);
     if (!userIdValidation.valid) {
-      return res.status(400).json({
-        success: false,
-        error: userIdValidation.error
-      });
+      return res.status(400).json({ success: false, error: userIdValidation.error });
     }
     const userId = userIdValidation.value;
 
@@ -630,32 +518,24 @@ const removeBadge = (req, res) => {
     store.userProgress[userId].badges.splice(index, 1);
     store.userProgress[userId].lastUpdated = new Date().toISOString();
 
+    logger.info(`Badge removed for user: ${userId}`);
+
     res.json({
       success: true,
       message: 'Badge removed successfully'
     });
 
   } catch (error) {
-    console.error('[Progress] Remove badge error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error'
-    });
+    logger.error('[Progress] Remove badge error:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
   }
 };
 
-/**
- * DELETE /api/progress/:userId/quests/:questId
- * Remove a quest
- */
 const removeQuest = (req, res) => {
   try {
     const userIdValidation = validateUserId(req.params.userId);
     if (!userIdValidation.valid) {
-      return res.status(400).json({
-        success: false,
-        error: userIdValidation.error
-      });
+      return res.status(400).json({ success: false, error: userIdValidation.error });
     }
     const userId = userIdValidation.value;
 
@@ -679,32 +559,24 @@ const removeQuest = (req, res) => {
     store.userProgress[userId].quests.splice(index, 1);
     store.userProgress[userId].lastUpdated = new Date().toISOString();
 
+    logger.info(`Quest removed for user: ${userId}`);
+
     res.json({
       success: true,
       message: 'Quest removed successfully'
     });
 
   } catch (error) {
-    console.error('[Progress] Remove quest error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error'
-    });
+    logger.error('[Progress] Remove quest error:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
   }
 };
 
-/**
- * PATCH /api/progress/:userId/quests/:questId
- * Update quest status
- */
 const updateQuestStatus = (req, res) => {
   try {
     const userIdValidation = validateUserId(req.params.userId);
     if (!userIdValidation.valid) {
-      return res.status(400).json({
-        success: false,
-        error: userIdValidation.error
-      });
+      return res.status(400).json({ success: false, error: userIdValidation.error });
     }
     const userId = userIdValidation.value;
 
@@ -752,6 +624,8 @@ const updateQuestStatus = (req, res) => {
     quest.updatedAt = new Date().toISOString();
     store.userProgress[userId].lastUpdated = new Date().toISOString();
 
+    logger.info(`Quest updated for user: ${userId}`);
+
     res.json({
       success: true,
       message: 'Quest updated successfully',
@@ -759,26 +633,16 @@ const updateQuestStatus = (req, res) => {
     });
 
   } catch (error) {
-    console.error('[Progress] Update quest error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error'
-    });
+    logger.error('[Progress] Update quest error:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
   }
 };
 
-/**
- * GET /api/progress/:userId/stats
- * Get statistics
- */
 const getStats = (req, res) => {
   try {
     const userIdValidation = validateUserId(req.params.userId);
     if (!userIdValidation.valid) {
-      return res.status(400).json({
-        success: false,
-        error: userIdValidation.error
-      });
+      return res.status(400).json({ success: false, error: userIdValidation.error });
     }
     const userId = userIdValidation.value;
 
@@ -799,38 +663,32 @@ const getStats = (req, res) => {
 
     const stats = calculateStats(store.userProgress[userId]);
 
+    logger.info(`Stats fetched for user: ${userId}`);
+
     res.json({
       success: true,
       data: stats
     });
 
   } catch (error) {
-    console.error('[Progress] Stats error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error'
-    });
+    logger.error('[Progress] Stats error:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
   }
 };
 
-/**
- * DELETE /api/progress/:userId
- * Clear all progress
- */
 const clearProgress = (req, res) => {
   try {
     const userIdValidation = validateUserId(req.params.userId);
     if (!userIdValidation.valid) {
-      return res.status(400).json({
-        success: false,
-        error: userIdValidation.error
-      });
+      return res.status(400).json({ success: false, error: userIdValidation.error });
     }
     const userId = userIdValidation.value;
 
     if (store.userProgress[userId]) {
       store.userProgress[userId] = createDefaultProgress();
     }
+
+    logger.info(`Progress cleared for user: ${userId}`);
 
     res.json({
       success: true,
@@ -839,11 +697,8 @@ const clearProgress = (req, res) => {
     });
 
   } catch (error) {
-    console.error('[Progress] Clear error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error'
-    });
+    logger.error('[Progress] Clear error:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
   }
 };
 
